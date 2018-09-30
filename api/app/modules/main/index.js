@@ -8,10 +8,14 @@ const router = new Router();
 
 router
 	// .param('id', checkID())
+	.get('/', checkUser())
 	.post('/', checkUser(), mainController.main)
+	.get('/select', checkUser())
 	.post('/select', checkUser(), mainController.selected)
 	// .post('/res/:id', checkUser(), mainController.res)
+	.get('/search', checkUser())
 	.post('/search', checkUser(), mainController.search)
+	.get('/search/map', checkUser())
 	.post('/search/map', checkUser(), mainController.searchMap)
 	.get('/menu', checkUser(), mainController.menu);
 
