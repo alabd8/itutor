@@ -12,14 +12,17 @@ import { TutorService } from '../../tutors/services';
 export default {
 	async main(ctx){
 		const {
+			state: {
+				user,
+			},
 			request: {
 				body: {
 					data,
 				}
 			}
 		} = ctx;
-		
-		await search(ctx, data);
+
+		await search(ctx, user, data);
 	},
 
 	async selected(ctx){
@@ -34,30 +37,34 @@ export default {
 			}
 		} = ctx;
 
-		await searchTags(ctx, data);
+		await searchTags(ctx, user, data);
 	},
 
 	async search(ctx){
 		const {
+			state: {
+				user,
+			},
 			request: {
 				body,
 			}
 		} = ctx;
 		
-		await filter(ctx, body);
+		await filter(ctx, user, body);
 		
 	},
 
 	async searchMap(ctx){
 		const {
+			state: {
+				user,
+			},
 			request: {
 				body,
 			}
 		} = ctx;
 
-		console.log("BODY: ", body);
-
-		await calAndFind(ctx, body);
+		await calAndFind(ctx, user, body);
 	},
 
 

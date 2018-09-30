@@ -23,6 +23,6 @@ export default async (ctx, body = null) => {
 			}
 		}
 
-		return await setCtx(ctx, res);	
+		return await setCtx(ctx, { user: user, body: res });	
 	}
 }
