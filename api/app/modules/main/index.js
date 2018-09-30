@@ -8,12 +8,12 @@ const router = new Router();
 
 router
 	// .param('id', checkID())
-	.post('/', mainController.main)
-	.post('/select', mainController.selected)
+	.post('/', checkUser(), mainController.main)
+	.post('/select', checkUser(), mainController.selected)
 	// .post('/res/:id', checkUser(), mainController.res)
-	.post('/search', mainController.search)
-	.post('/search/map', mainController.searchMap)
-	.get('/menu', mainController.menu);
+	.post('/search', checkUser(), mainController.search)
+	.post('/search/map', checkUser(), mainController.searchMap)
+	.get('/menu', checkUser(), mainController.menu);
 
 export default router.routes();
 
