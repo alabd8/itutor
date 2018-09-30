@@ -30,6 +30,8 @@ export default () => async (ctx, next) => {
 		}catch(ex){
 			ctx.throw(401, { message: 'Unauthorized. Invalid Token' });
 		}
+	}else{
+		ctx.throw(401, { message: 'Unauthorized. Invalid Token' });
 	}
 
 	await next();
