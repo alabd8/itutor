@@ -17,7 +17,8 @@ router
 	.post('/search', checkUser(), mainController.search)
 	.get('/search/map', checkUser())
 	.post('/search/map', checkUser(), mainController.searchMap)
-	.get('/menu', checkUser(), mainController.menu);
+	.post('/menu', checkUser(), mainController.menu)
+	.get('/menu', checkUser());
 
 export default router.routes();
 

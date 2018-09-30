@@ -18,7 +18,7 @@ initHandlers(app);
 app.use(modules);
 
 app.use(async (ctx) => {
-	ctx.body = '<h1>Hello Alisher</h1>';		
+	ctx.body = '<h1>Welcome to itutor</h1>';		
 });
 
 export default app;
