@@ -29,9 +29,9 @@ export default async (ctx, user, data = null) => {
 		const titles = await constants.getUnpaid();
 		return await setCtx(ctx, { user: user, titles: titles });
 	}else if(Array.isArray(data)){
-		const findTutors = await TutorService.getRecommended({ title: [data] });
-		const findLCs = await LCService.getRecommended({ title: [data] });
-		return await setCtx(ctx, [user, findTutors, findLCs]);
+		const findTutors = await TutorService.getRecommended({ title: data });
+		const findLCs = await LCService.getRecommended({ title: data });
+		return await setCtx(ctx, [{ user: user }, { findTutors: findTutors }, { findLCs: findLCs }]);
 	}else if(!data){
 		ctx.throw(404, `Type error`);
 	}

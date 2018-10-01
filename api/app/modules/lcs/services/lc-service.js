@@ -10,6 +10,7 @@ export default {
 	},
 
 	async getRecommended(params){
+		console.log("SERVICE: ", params);
 		return LC.find(params).select({ password: 0, updatedAt: 0, __v: 0 });
 	},
 
