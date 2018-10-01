@@ -5,6 +5,7 @@ import cal from './cal';
 
 export default async (ctx, user, body = null) => {
 	if(body){
+
 		const result = await cal(body);
 		console.log("RESULT: ", result);
 
@@ -15,11 +16,9 @@ export default async (ctx, user, body = null) => {
 
 		let res = [];
 					
-		for(let i = 0; i <= rest.length; i++){
+		for(let i = 0; i < rest.length; i++){
 			if(rest[i].coords.lat <= result.north && rest[i].coords.lat >= result.south){
-				console.log("WWWWWWWWWWW");
 				if(rest[i].coords.long >= result.west && rest[i].coords.long <= result.east){
-					console.log(`QQQQQQQQQQQQ: ${i},  QQQQQQQ: ${rest[i]}`);
 					res.push(rest[i]);
 				}
 			}

@@ -182,10 +182,12 @@ const LCSchema = new Schema({
 	},
 	coords: {
 		lat: {
-			type: String
+			type: String,
+			default: false
 		},
 		long: {
-			type: String
+			type: String,
+			default: false
 		}
 	},
 	recommended: {

@@ -9,23 +9,30 @@ export default () => async (ctx, next) => {
 	if(authorization){
 		try{
 			let { email } = await jwtService.verify(authorization);
-
+	
 			const user = await User.findOne({ email });
 			
 			if(user){
 				ctx.state.user = user;
 			}
-
+	
 			const tutor = await Tutor.findOne({ email });
 			
 			if(tutor){
 				ctx.state.user = tutor;
 			}
-
+	
 			const lc = await LC.findOne({ email })
 
 			if(lc){
 				ctx.state.user = lc;
+			}
+
+			console.log(`user: ${user}, tutor: ${tutor}, lc: ${lc}`);
+			
+			if(user == null && tutor == null && lc == null){
+				console.log("HEELO");
+				ctx.throw(401, { message: 'Unauthorized. Invalid Token' });
 			}
 		}catch(ex){
 			ctx.throw(401, { message: 'Unauthorized. Invalid Token' });
