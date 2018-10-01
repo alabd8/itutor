@@ -1,21 +1,15 @@
-export default async (body) => {
-	if(body.coords){
-		const coord = "00,040000";
-		const lat = body.coords.lat;
-		const long = body.coords.long;
-		console.log(JSON.parse(coord));
+import { HUN, KM } from '../constants';
 
-		const north = lat + JSON.parse(coord);
-		const south = lat - JSON.parse(coord);
-		const west = long - JSON.parse(coord);
-		const east = long + JSON.parse(coord);
+export default async (params) => {
+	if(params.coords){
+		const lat = params.coords.lat * HUN;
+		const long = params.coords.long * HUN;
 
-		console.log(`
-			north: ${north}
-			south: ${south}
-			west: ${west}
-			east: ${east}
-		`);
+		const north = (( lat + KM ) / HUN );
+		const south = (( lat - KM ) / HUN );
+		const west = (( long - KM ) / HUN );
+		const east = (( long + KM ) / HUN );
+
 		return { north: north, south: south, west: west, east: east }; 
 	}
 }

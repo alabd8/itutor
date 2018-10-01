@@ -23,7 +23,7 @@ export default {
 			  lcData.img = await setParamsForImage(ctx);
 
 		await checkEnumValues(ctx);
-		
+				
 		const { _id } = await LCService.createLC(lcData);
 		const lc = await LCService.findOne({ _id });
 
