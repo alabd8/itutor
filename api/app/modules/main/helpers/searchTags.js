@@ -4,28 +4,28 @@ import { TutorService } from '../../tutors/services';
 import { LCService } from '../../lcs/services';
 
 export default async (ctx, user, data = null) => {
-	if(data === 'langTypes'){
+	if(data === 'languages'){
 		const titles = await constants.getLanguages();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'scienceTypes'){
+	}else if(data === 'sciences'){
 		const titles = await constants.getSciences();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'inforTypes'){
+	}else if(data === 'information'){
 		const titles = await constants.getInformation();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'profTypes'){
+	}else if(data === 'prof'){
 		const titles = await constants.getProf();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'extraTypes'){
+	}else if(data === 'extra'){
 		const titles = await constants.getExtra();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'creativeTypes'){
+	}else if(data === 'сreative'){
 		const titles = await constants.getCreative();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'combinedTypes'){
+	}else if(data === 'combined'){
 		const titles = await constants.getCombined();
 		return await setCtx(ctx, { user: user, titles: titles });
-	}else if(data === 'unpaidTypes'){
+	}else if(data === 'unpaid'){
 		const titles = await constants.getUnpaid();
 		return await setCtx(ctx, { user: user, titles: titles });
 	}else if(Array.isArray(data)){
