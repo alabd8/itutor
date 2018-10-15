@@ -226,9 +226,79 @@ const TutorSchema = new Schema({
 		type: Number,
 		default: 0,
 	},
-	course: {
-		type: Object,
-	},
+	course: [{
+		name: {
+			type: String,
+			required: 'Name is required',
+			trim: true
+		},
+		title: {
+			type: String,
+			required: 'Course title is required',
+			trim: true
+		},
+		category: {
+			type: String,
+			required: 'Course category is required',
+			trim: true
+		},
+		tags: {
+			type: [String],
+			required: 'Course tags are required',
+			trim: true
+		},
+		coords: {
+			lat: {
+				type: String,
+				default: false
+			},
+			long: {
+				type: String,
+				default: false
+			}
+		},
+		state: {
+			type: Boolean,
+			default: false
+		},
+		starCount: {
+			type: Number,
+			default: 0,
+		},
+		sticker: {
+			type: String,
+			default: false
+		},
+		link: {
+			type: String,
+		},
+		addInfo: {
+			type: String,
+		},
+		logoUrl: {
+			type: String,
+		},
+		introText: {
+			type: String,
+		},
+		coursePage: {
+			teacherId: {
+				type: String,
+			},
+			teacherInfo: {
+				type: String,
+			},
+			title: {
+				type: String,
+			},
+			about: {
+				type: String,
+			},
+			courseType: {
+				type: String,
+			},
+		}
+	}],
 	gellery: {
 		type: Object,
 	},
@@ -237,7 +307,11 @@ const TutorSchema = new Schema({
 	},
 	url: {
 		type: String,
-	}
+	},
+	authorized: {
+		type: Boolean,
+		default: false,
+	},
 }, {
 	timestamps: true
 	// , toJSON: { virtuals: true }
@@ -250,7 +324,7 @@ TutorSchema.statics.createFields = [
 						'catchBuses', 'history', 'role',
 						'saves', 'active', 'coords', 'state', 
 						'starCount', 'course', 'gellery', 'trophies',
-						'recommended'
+						'recommended', 'authorized'
 						];
 
 TutorSchema.pre('save', function(next){

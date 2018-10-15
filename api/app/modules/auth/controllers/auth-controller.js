@@ -8,7 +8,6 @@ import jwtService from '../../../services/jwt-service';
 import setParamsForImage from '../../../helpers/setParamsForImage';
 import checkEnumValues from '../../../helpers/checkEnumValues';
 import setCtx from '../../../helpers/setCtx';
-import promiseAll from '../helpers/promiseAll';
 import { UserService } from '../../users/services';
 import { TutorService } from '../../tutors/services';
 import { LCService } from '../../lcs/services';
@@ -51,16 +50,52 @@ export default {
 
 	},
 
+	async access(ctx){
+		const {
+			state: {
+				user,
+			}
+		} = ctx;
+
+		await setCtx(ctx, { user: user });
+	},
+
 	async currentUser(ctx){
 		const {
 			state: {
 				user: { 
 					hash,
+					role,
 				},
-			},
+				student,
+			}
 		} = ctx;
 
-		await promiseAll(ctx, _id);
+		if(student.hash != hash && role != 'student'){
+			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
+		}
+
+		await setCtx(ctx, { user: user });
+	},
+
+	async deleteUser(ctx){
+		const { 
+			state: { 
+				user: {
+					role,
+					hash,
+				},
+				student,
+			}
+		} = ctx;
+
+		if(student.hash != hash && role != 'student'){
+			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
+		}
+
+		await student.remove();
+
+		await setCtx(ctx, { hash: student.hash });
 	},
 };
 

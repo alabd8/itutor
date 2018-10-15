@@ -47,7 +47,7 @@ export default {
 			}
 		} = ctx;
 
-		if(user.role != 'center'){
+		if(lc.hash != user.hash && user.role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -58,6 +58,31 @@ export default {
 	},	
 
 	async update(ctx){
+		const {
+			request: {     
+				body,
+			},
+			state: {
+				user: {
+					role,
+					hash,
+				},
+				lc,
+				id,
+			},
+		} = ctx;
+
+		if(lc.hash != hash && role != 'center'){
+			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
+		}
+
+		const pull = await LCService.pull(lc._id, id);
+		const updatedLC = await LCService.push(lc._id, ctx.request.body);
+
+		await setCtx(ctx, { data: updatedLC });
+	},
+
+	async updateLC(ctx){
 		const {
 			request: {     
 				body,
@@ -138,9 +163,9 @@ export default {
 		} = ctx;
 
 		try{
-			const lc = await LCService.findOne(lc);
+			const result = await LCService.findOne(lc);
 
-			await setCtx(ctx, [{ user: user }, { lc_courses: lc.course }]);	
+			await setCtx(ctx, [{ user: user }, { lc_courses: result.course }]);	
 		}catch(ex){
 			ctx.throw(400, { message: `Error. Can not get courses` });	
 		}
@@ -251,7 +276,7 @@ export default {
 		} = ctx;
 
 		if(lc.hash !== hash && role !== 'center'){
-			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.userHash}" doesn't belong to user with hash "${hash}"`);
+			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
 		const updatedLC = await LCService.pull(lc._id, id);

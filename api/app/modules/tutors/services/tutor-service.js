@@ -19,6 +19,14 @@ export default {
 		}
 	},
 
+	async pull(lcId, courseId){
+		return LC.findByIdAndUpdate(lcId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
+	},
+
+	async push(lcId, data){
+		return LC.findByIdAndUpdate(lcId, { $push: { 'course': data }}, { 'new': true });
+	},
+	
 	async getRecommended(params){
 		return Tutor.find(params).select({ __v: 0, createdAt: 0, password: 0, _id: 0 });
 	},
@@ -27,7 +35,7 @@ export default {
 		return Tutor.find().sort({ title: -1 }).select({ _id: 0, password: 0, createdAt: 0, __v: 0 });
 	},
 
-	async searchTutor(params){
+	async findOne(params){
 		return Tutor.findOne(params).select({ _id: 0, password: 0, createdAt: 0, __v: 0, });
 	},
 

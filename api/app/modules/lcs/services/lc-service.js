@@ -19,12 +19,17 @@ export default {
 		}
 	},
 
+	async update(lcId, courseId, data){
+		// return LC.findByIdAndUpdate(lcId, { $set: { 'course' : { _id:  }}}, { 'new': true });
+		// return LC.update({ "_id": lcId, "course._id": courseId }, { $set: data }, { 'new': true });
+	},
+
 	async pull(lcId, courseId){
-		return LC.findByIdAndUpdate(lcId, { $pull: { "course": { _id: courseId }}}, {'new': true });
+		return LC.findByIdAndUpdate(lcId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
 	},
 
 	async push(lcId, data){
-		return LC.findByIdAndUpdate(lcId, { $push: { "course": data }}, { 'new': true });
+		return LC.findByIdAndUpdate(lcId, { $push: { 'course': data }}, { 'new': true });
 	},
 
 	async getRecommended(params){
