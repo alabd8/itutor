@@ -3,11 +3,9 @@ import { TutorService } from '../../tutors/services';
 import setCtx from '../../../helpers/setCtx';
 import cal from './cal';
 
-export default async (ctx, user, body = null) => {
+export default async (body = null) => {
 	if(body){
-
 		const result = await cal(body);
-		console.log("RESULT: ", result);
 
 		const lcs = await LCService.find()
 		const tutors = await TutorService.find();
@@ -24,6 +22,6 @@ export default async (ctx, user, body = null) => {
 			}
 		}
 
-		return await setCtx(ctx, { user: user, body: res });	
+		return res;	
 	}
 }

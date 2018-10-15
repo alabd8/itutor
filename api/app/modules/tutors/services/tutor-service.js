@@ -9,8 +9,18 @@ export default {
 		}
 	},
 
+	async updateTutor(data, tutor){
+		tutor.set(data);
+
+		try{
+			return tutor.save()
+		}catch(ex){
+			throw new AppError({ status: 400, ...ex });
+		}
+	},
+
 	async getRecommended(params){
-		return Tutor.find(params).select({ __v: 0, createdAt: 0, password: 0 });
+		return Tutor.find(params).select({ __v: 0, createdAt: 0, password: 0, _id: 0 });
 	},
 
 	async getTutorWithPublicFields(){
@@ -26,6 +36,10 @@ export default {
 	},
 
 	async find(){
-		return Tutor.find().select({ password: 0, createdAt: 0, __v: 0 });
+		return Tutor.find().select({ password: 0, createdAt: 0, __v: 0, _id: 0 });
 	},
+
+	async count(){
+		return Tutor.count();
+	}
 };

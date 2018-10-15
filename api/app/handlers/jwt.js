@@ -27,12 +27,9 @@ export default () => async (ctx, next) => {
 			if(lc){
 				ctx.state.user = lc;
 			}
-
-			console.log(`user: ${user}, tutor: ${tutor}, lc: ${lc}`);
 			
 			if(user == null && tutor == null && lc == null){
-				console.log("HEELO");
-				ctx.throw(401, { message: 'Unauthorized. Invalid Token' });
+				ctx.throw(403, { message: 'Forbidden. Unauthorized' });
 			}
 		}catch(ex){
 			ctx.throw(401, { message: 'Unauthorized. Invalid Token' });

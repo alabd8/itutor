@@ -7,7 +7,7 @@ export default () => async (hash, ctx, next) => {
 		ctx.throw(404, `Learning Centre with hash "${hash}" not found`);
 	}
 
-	ctx.state.user = lc;
+	ctx.state.lc = lc;
 
 	await next();
 };

@@ -50,23 +50,10 @@ export default {
 			}
 		} = ctx;
 		
-		await filter(ctx, user, body);
+		const result = await calAndFind(body);
 		
+		await filter(ctx, user, result, body);
 	},
-
-	async searchMap(ctx){
-		const {
-			state: {
-				user,
-			},
-			request: {
-				body,
-			}
-		} = ctx;
-
-		await calAndFind(ctx, user, body);
-	},
-
 
 	async menu(ctx){
 		const {
@@ -107,4 +94,15 @@ export default {
 		ctx.body = tutor;
 	},
 
+	async menuCourses(ctx){
+		const {
+			state: {
+				user,
+			}
+		} = ctx;
+
+		await setCtx(ctx, { user: user });
+	},
+
+	
 };

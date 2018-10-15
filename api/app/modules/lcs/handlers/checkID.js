@@ -1,13 +1,7 @@
 import { LC } from '../';
 
-export default () => async (hash, ctx, next) => {
-	const lc = await LC.findOne({ hash });
-
-	if(!lc){
-		ctx.throw(404, `Learning Centre with hash "${hash}" not found`);
-	}
-
-	ctx.state.id = lc;
+export default () => async (id, ctx, next) => {
+	ctx.state.id = id;
 
 	await next();
 };

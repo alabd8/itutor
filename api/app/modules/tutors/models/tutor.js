@@ -31,7 +31,10 @@ const TutorSchema = new Schema({
 			},
 			tags: {
 				type: [String]
-			},	
+			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}	
 		}],
 		sciences: [{
 			title: {
@@ -40,6 +43,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}	
 		}],
 		information: [{
 			title: {
@@ -48,6 +54,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		prof: [{
 			title: {
@@ -56,6 +65,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		extra: [{
 			title: {
@@ -64,6 +76,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		сreative: [{
 			title: {
@@ -72,6 +87,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		combined: [{
 			title: {
@@ -79,7 +97,10 @@ const TutorSchema = new Schema({
 			},
 			tags: {
 				type: [String]
-			},	
+			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}	
 		}],
 		unpaid: [{
 			title: {
@@ -88,6 +109,9 @@ const TutorSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 	},
 	tags: {

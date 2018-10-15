@@ -7,10 +7,10 @@ import checkID from './handlers/checkID';
 const router = new Router();
 
 router
-	.post('/', mainController.main)
-	.post('/select', mainController.selected)
-	.post('/search', mainController.search)
-	.post('/search/map', mainController.searchMap)
+	.post('/home', mainController.main)
+	.post('/home/select', mainController.selected)
+	.post('/home/results', mainController.search)
+	.post('/search', mainController.main)
 	.post('/menu', mainController.menu);
 
 export default router.routes();

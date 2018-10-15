@@ -1,7 +1,9 @@
 import pick from 'lodash/pick';
-import { User, User_Params } from '../../users';
+import { User } from '../../users';
 import { Tutor } from '../../tutors';
 import { LC } from '../../lcs';
+import { Admin } from '../../admin';
+// import { Moderator } from '../../moderator';
 import jwtService from '../../../services/jwt-service';
 import setParamsForImage from '../../../helpers/setParamsForImage';
 import checkEnumValues from '../../../helpers/checkEnumValues';
@@ -27,22 +29,24 @@ export default {
 	async login(ctx){
 		const { email, password } = ctx.request.body;
 
-		const [ user, tutor, lc ] = await Promise.all([
+		const [ user, tutor, lc, admin ] = await Promise.all([
 			await User.findOne({ email }),
 			await Tutor.findOne({ email }),
 			await LC.findOne({ email }),
+			await Admin.findOne({ email }),
+			// await Moderator.findOne({ email }),
 		]);
 
-		if(!user && !tutor && !lc){
+		if(!user && !tutor && !lc && !admin){
 			ctx.throw(400, { message: 'Not found' });
 		}
 
-		if(!(user || tutor || lc).comparePasswords(password)){
+		if(!(user || tutor || lc || admin).comparePasswords(password)){
 			ctx.throw(400, { message: 'Invalid password' });
 		}
-
+		
 		const token = await jwtService.genToken({ email });
-
+		
 		ctx.body = { data: token };
 
 	},
@@ -51,7 +55,7 @@ export default {
 		const {
 			state: {
 				user: { 
-					_id,
+					hash,
 				},
 			},
 		} = ctx;

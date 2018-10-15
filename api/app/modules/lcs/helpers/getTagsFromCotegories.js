@@ -1,32 +1,24 @@
 import setCtx from '../../../helpers/setCtx';
 
-export default async (ctx, titles) => {
-	const {
-		request: {
-			body: {
-				data,
-			}
-		}
-	} = ctx;
-	
-	switch(data){
-		case 'languages': 	return await setCtx(ctx, titles.languages);
+export default async (ctx, data, user, titles) => {
+	switch(data.course){
+		case 'languages': 	return await setCtx(ctx, [{ user: user }, { result: titles.languages }]);
 						  	break;
-		case 'sciences':  	return await setCtx(ctx, titles.sciences);
+		case 'sciences':  	return await setCtx(ctx, [{ user: user }, { result: titles.sciences }]);
 						  	break;
-		case 'information': return await setCtx(ctx, titles.information);
+		case 'information': return await setCtx(ctx, [{ user: user }, { result: titles.information }]);
 							break;
-		case 'prof': 		return await setCtx(ctx, titles.prof);
+		case 'prof': 		return await setCtx(ctx, [{ user: user }, { result: titles.prof }]);
 						  	break;
-		case 'extra': 		return await setCtx(ctx, titles.extra);
+		case 'extra': 		return await setCtx(ctx, [{ user: user }, { result: titles.extra }]);
 						  	break;
-		case 'сreative': 	return await setCtx(ctx, titles.сreative);
+		case 'сreative': 	return await setCtx(ctx, [{ user: user }, { result: titles.сreative }]);
 						  	break;
-		case 'combined': 	return await setCtx(ctx, titles.combined);
+		case 'combined': 	return await setCtx(ctx, [{ user: user }, { result: titles.combined }]);
 						  	break;
-		case 'unpaid': 		return await setCtx(ctx, titles.unpaid);
+		case 'unpaid': 		return await setCtx(ctx, [{ user: user }, { result: titles.unpaid }]);
 							break;
-		default: 			ctx.throw(400, 'Error. Invalid data type');
+		default: 			ctx.throw(400, 'Error. Invalid course type');
 							break;
 	};
 };

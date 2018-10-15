@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import lcController from './controllers/lc-controller';
 import checkUser from '../../handlers/checkUser';
-import accesUser from '../../handlers/accesUser';
+import accessUser from './handlers/accessUser';
 import checkLC from './handlers/checkLC';
 import checkID from './handlers/checkID';
 import { LC } from './models';
@@ -10,20 +10,21 @@ import { LC } from './models';
 const router = new Router();
 
 router
-	.get('/signup', accesUser())
+	.get('/signup', accessUser())
 	.post('/signup/lc/verify', lcController.verify)
 	.post('/signup/lc', lcController.signup)
 	.param('hash', checkLC())
 	.param('id', checkID())
-	.post('/lc/:hash', checkUser(), lcController.lc)
-	.post('/lc/:hash/courses/cotegory', checkUser(), lcController.cotegory)
-	.post('lc/:hash/courses/select', checkUser(), lcController.select)
-	.post('lc/:hash/courses/:id', checkUser(), lcController.courseList)
-	.post('lc/:hash/teachers', checkUser(), lcController.teachers)
-	.post('lc/:hash/teacher/:id', checkUser(), lcController.teacher)
-	.put('lc/:hash', checkUser(), lcController.update)
-	.delete('lc/:hash', checkUser(), lcController.delete)
-	.get('/:hash', lcController.getLC);
+	.post('/menu/courses/:hash', accessUser(), lcController.courses)
+	.put('/menu/courses/:hash', accessUser(), lcController.update)
+	.post('/menu/courses/:hash/new-course', accessUser(), lcController.create)
+	.delete('/menu/courses/:hash/:id', accessUser(), lcController.delete)
+
+	.post('/centers/:hash/courses', lcController.showCourses)
+	.post('/centers/:hash/courses/:id', lcController.showCourse)
+	.post('/centers/:hash/teachers', lcController.teachers)
+	.post('/centers/:hash/teachers/:id', lcController.teacher)
+	.post('/centers/:hash/gallery', lcController.gallery);
 
 
 export default router.routes();
@@ -31,3 +32,4 @@ export default router.routes();
 export {
 	LC,
 };
+	

@@ -6,7 +6,7 @@ import setCtx from '../../../helpers/setCtx';
 
 export default async (ctx, user) => {
 	try{
-		return await setCtx(ctx, { user: user, content: 'Избранные' });
+		return await setCtx(ctx, { user: user });
 	}catch(ex){
 		ctx.throw(404, ...ex);
 	}

@@ -20,7 +20,10 @@ const LCSchema = new Schema({
 			},
 			tags: {
 				type: [String]
-			},	
+			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}	
 		}],
 		sciences: [{
 			title: {
@@ -29,6 +32,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		information: [{
 			title: {
@@ -37,6 +43,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		prof: [{
 			title: {
@@ -45,6 +54,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		extra: [{
 			title: {
@@ -53,6 +65,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		сreative: [{
 			title: {
@@ -61,6 +76,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 		combined: [{
 			title: {
@@ -68,7 +86,10 @@ const LCSchema = new Schema({
 			},
 			tags: {
 				type: [String]
-			},	
+			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}	
 		}],
 		unpaid: [{
 			title: {
@@ -77,6 +98,9 @@ const LCSchema = new Schema({
 			tags: {
 				type: [String]
 			},
+			_id: {
+				type: Schema.Types.ObjectId, 
+			}
 		}],
 	},
 	tags: {
@@ -174,9 +198,79 @@ const LCSchema = new Schema({
 			type: [Object],
 		},
 	}],
-	course: {
-		type: [Object]
-	},
+	course: [{
+		name: {
+			type: String,
+			required: 'Name is required',
+			trim: true
+		},
+		title: {
+			type: String,
+			required: 'Course title is required',
+			trim: true
+		},
+		category: {
+			type: String,
+			required: 'Course category is required',
+			trim: true
+		},
+		tags: {
+			type: [String],
+			required: 'Course tags are required',
+			trim: true
+		},
+		coords: {
+			lat: {
+				type: String,
+				default: false
+			},
+			long: {
+				type: String,
+				default: false
+			}
+		},
+		state: {
+			type: Boolean,
+			default: false
+		},
+		starCount: {
+			type: Number,
+			default: 0,
+		},
+		sticker: {
+			type: String,
+			default: false
+		},
+		link: {
+			type: String,
+		},
+		addInfo: {
+			type: String,
+		},
+		logoUrl: {
+			type: String,
+		},
+		introText: {
+			type: String,
+		},
+		coursePage: {
+			teacherId: {
+				type: String,
+			},
+			teacherInfo: {
+				type: String,
+			},
+			title: {
+				type: String,
+			},
+			about: {
+				type: String,
+			},
+			courseType: {
+				type: String,
+			},
+		}
+	}],
 	gallery: {
 		type: Object,
 	},
@@ -210,7 +304,11 @@ const LCSchema = new Schema({
 	},
 	url: {
 		type: String,
-	}
+	},
+	authorized: {
+		type: Boolean,
+		default: false,
+	},
 }, {
 	timestamps: true
 });
@@ -222,7 +320,7 @@ LCSchema.statics.createFields = ['name', 'title', 'tags',
 								'workingTime', 'address', 'ways',
 								'reviews', 'teachers', 'course',
 								'gallery', 'coords', 'recommended',
-								'starCount'
+								'starCount', 'authorized'
 								];
 
 LCSchema.pre('save', function(next){
