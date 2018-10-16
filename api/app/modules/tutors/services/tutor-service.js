@@ -19,12 +19,12 @@ export default {
 		}
 	},
 
-	async pull(lcId, courseId){
-		return LC.findByIdAndUpdate(lcId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
+	async pull(tutorId, courseId){
+		return Tutor.findByIdAndUpdate(tutorId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
 	},
 
-	async push(lcId, data){
-		return LC.findByIdAndUpdate(lcId, { $push: { 'course': data }}, { 'new': true });
+	async push(tutorId, data){
+		return Tutor.findByIdAndUpdate(tutorId, { $push: { 'course': data }}, { 'new': true });
 	},
 	
 	async getRecommended(params){

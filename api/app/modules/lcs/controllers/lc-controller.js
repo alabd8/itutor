@@ -37,7 +37,10 @@ export default {
 	async courses(ctx){
 		const {
 			state: {
-				user,
+				user: {
+					role,
+					hash,
+				},
 				lc,
 			},
 			request: {
@@ -47,13 +50,13 @@ export default {
 			}
 		} = ctx;
 
-		if(lc.hash != user.hash && user.role != 'center'){
+		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
-		const result = await LCService.findOne(user);
+		const result = await LCService.findOne(lc);
 
-		await setCtx(ctx, [{ user: user }, { centerCourses: result.course }]);
+		await setCtx(ctx, [{ user: result }, { centerCourses: result.course }]);
 	
 	},	
 
@@ -72,7 +75,7 @@ export default {
 			},
 		} = ctx;
 
-		if(lc.hash != hash && role != 'center'){
+		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -96,7 +99,7 @@ export default {
 			},
 		} = ctx;
 
-		if(lc.hash != hash && role != 'center'){
+		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -117,7 +120,7 @@ export default {
 			}
 		} = ctx;
 
-		if(lc.hash != hash && role != 'center'){
+		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -127,26 +130,6 @@ export default {
 
 		ctx.status = 201;
 		ctx.body = { data: result };
-	},
-
-	async select(ctx){
-		const {
-			state: {
-				user,
-				lc,
-			},
-			request: {
-				body: {
-					data,
-				}
-			}
-		} = ctx;
-
-		if(user || data ===  'getTutorCourses'){		
-			const lc = await LCService.findOne(lc);
-
-			await getTagsFromCotegories(ctx, data, user, lc.title);	
-		}
 	},
 
 	async showCourses(ctx){
@@ -165,7 +148,7 @@ export default {
 		try{
 			const result = await LCService.findOne(lc);
 
-			await setCtx(ctx, [{ user: user }, { lc_courses: result.course }]);	
+			await setCtx(ctx, [{ user: user }, { lc: result }, { lc_courses: result.course }]);	
 		}catch(ex){
 			ctx.throw(400, { message: `Error. Can not get courses` });	
 		}
@@ -186,10 +169,18 @@ export default {
 		} = ctx;
 
 		try{
-			const course = await LCService.findOne(id);
-			const lc = await LCService.findOne(lc);
+			const result = await LCService.findOne(lc);
+			let set = [];
 
-			await setCtx(ctx, [{ user: user }, { lc: lc }, { course: course }]); 
+			for(let i = 0; i <= result.course.length; i++){
+				if(result.course[i]){
+					if(result.course[i]._id == id){
+						set.push(result.course[i]);
+					}
+				}
+			}
+
+			await setCtx(ctx, [{ user: user }, { lc: result }, { course: set }]); 
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get course` });
 		}
@@ -209,9 +200,9 @@ export default {
 		} = ctx;
 
 		try{
-			const lc = await LCService.findOne(lc);
+			const result = await LCService.findOne(lc);
 
-			await setCtx(ctx, [{ user: user }, { lc: lc }, { teachers: lc.teachers }]);	
+			await setCtx(ctx, [{ user: user }, { lc: result }, { teachers: result.teachers }]);	
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get teachers` });
 		}
@@ -232,10 +223,18 @@ export default {
 		} = ctx;
 
 		try{
-			const teacher = await LCService.findOne(id)
-			const lc = await LCService.findOne(id);
+			const result = await LCService.findOne(lc);
+			let set = [];
+			
+			for(let i = 0; i <= result.teachers.length; i++){
+				if(result.teachers[i]){
+					if(result.teachers[i]._id == id){
+						set.push(result.teachers[i]);
+					}
+				}
+			}
 
-			await setCtx(ctx, [{ user: user }, { lc: lc }, { teacher: teacher }]);	
+			await setCtx(ctx, [{ user: user }, { lc: result }, { teacher: set }]);	
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get teacher` });
 		}
@@ -255,9 +254,9 @@ export default {
 		} = ctx;
 
 		try{
-			const lc = await LCService.findOne(lc);
+			const result = await LCService.findOne(lc);
 
-			await setCtx(ctx, [{ user: user }, { lc: lc }, { gallery: lc.gallery }]);
+			await setCtx(ctx, [{ user: user }, { lc: result }, { gallery: result.gallery }]);
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get gallery` });
 		}
@@ -275,7 +274,7 @@ export default {
 			},
 		} = ctx;
 
-		if(lc.hash !== hash && role !== 'center'){
+		if(lc.hash !== hash || role !== 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -283,10 +282,4 @@ export default {
 
 		ctx.body = { data: updatedLC };
 	},
-
-	async getLC(ctx){
-		const { state : { lc } } = ctx;
-
-		ctx.body = { data: pick(lc, LC.createFields) }; 
-	}
 }

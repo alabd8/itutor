@@ -148,7 +148,8 @@ const TutorSchema = new Schema({
 	},
 	address: {
 		type: String,
-		trim: true
+		trim: true,
+		default: false
 	},
 	ways: {
 		type: [String],
@@ -271,39 +272,50 @@ const TutorSchema = new Schema({
 		},
 		link: {
 			type: String,
+			default: false
 		},
 		addInfo: {
 			type: String,
+			default: false
 		},
 		logoUrl: {
 			type: String,
+			default: false
 		},
 		introText: {
 			type: String,
+			default: false
 		},
 		coursePage: {
 			teacherId: {
 				type: String,
+				default: false
 			},
 			teacherInfo: {
 				type: String,
+				default: false
 			},
 			title: {
 				type: String,
+				default: false
 			},
 			about: {
 				type: String,
+				default: false
 			},
 			courseType: {
 				type: String,
+				default: false
 			},
 		}
 	}],
-	gellery: {
+	gallery: {
 		type: Object,
+		default: false
 	},
 	trophies: {
 		type: Object,
+		default: false
 	},
 	url: {
 		type: String,
@@ -323,7 +335,7 @@ TutorSchema.statics.createFields = [
 						'workingTime', 'description', 'address', 
 						'catchBuses', 'history', 'role',
 						'saves', 'active', 'coords', 'state', 
-						'starCount', 'course', 'gellery', 'trophies',
+						'starCount', 'course', 'gallery', 'trophies',
 						'recommended', 'authorized'
 						];
 

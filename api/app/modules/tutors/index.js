@@ -16,9 +16,9 @@ router
 	.post('/menu/teachers/:hash', checkUser(), tutorController.getTutor)
 	.put('/menu/teachers/:hash/:id', checkUser(), tutorController.update)
 	.post('/menu/teachers/:hash/new-course', checkUser(), tutorController.create)
-	.delete('/menu/courses/:hash/', checkUser(), tutorController.delete)
-	.put('/menu/contacts/:hash', checkUser(), tutorController.updateTutor)
-	.put('/menu/settings/:hash', checkUser(), tutorController.updateTutor)
+	.delete('/menu/teachers/:hash/:id', checkUser(), tutorController.delete)
+	.put('/menu/:hash/contacts', checkUser(), tutorController.updateTutor)
+	.put('/menu/:hash/settings', checkUser(), tutorController.updateTutor)
 
 	.post('/tutors/:hash/courses', tutorController.showCourses)
 	.post('/tutors/:hash/courses/:id', tutorController.showCourse)

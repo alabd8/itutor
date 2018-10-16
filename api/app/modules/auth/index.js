@@ -7,7 +7,7 @@ import check from './handlers/check';
 const router = new Router();
 
 router
-	.get('/menu/auth/signup', authController.access)
+	.post('/menu/auth/signup', authController.access)
 	.post('/menu/auth/signup/student', accessUser(), authController.signup)
 	.post('/menu/auth/signin', accessUser(), authController.login)
 	.param('hash', check())

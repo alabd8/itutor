@@ -29,11 +29,11 @@ export default {
 			}
 		} = ctx;
 
-		if(user.role != 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash "${tutor.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
-		const result = await TutorService.findOne(user);
+		const result = await TutorService.findOne(tutor);
 
 		await setCtx(ctx, { data: result });
 	},
@@ -53,7 +53,7 @@ export default {
 			},
 		} = ctx;
 
-		if(tutor.hash != hash && role != 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash "${tutor.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
@@ -77,14 +77,22 @@ export default {
 			},
 		} = ctx;
 
-		if(tutor.hash != hash && role != 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash "${tutor.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
 		const newData = pick(body, Tutor.createFields);
-		const updatedTutor = await TutorService.updateTutor(newData, tutor);
+			  let img = await setParamsForImage(ctx);
+			  
+			  if(img == false){ 
+					const updatedTutor = await TutorService.updateTutor(newData, tutor);
+					ctx.body = { data: updatedLC };
+			  }else{
+					newData.img = img;
+			  		const updatedTutor = await TutorService.updateTutor(newData, tutor);
+					ctx.body = { data: updatedLC };
+			  }
 
-		ctx.body = { data: updatedLC };
 	},
 
 	async create(ctx){
@@ -98,11 +106,11 @@ export default {
 			}
 		} = ctx;
 
-		if(tutor.hash != hash && role != 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash "${tutor.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
-		const result = await LCService.push(tutor._id, ctx.request.body);
+		const result = await TutorService.push(tutor._id, ctx.request.body);
 
 		ctx.status = 201;
 		ctx.body = { data: result };
@@ -120,11 +128,11 @@ export default {
 			},
 		} = ctx;
 
-		if(tutor.hash !== hash && role !== 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash "${tutor.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
-		const updatedTutor = await LCService.pull(tutor._id, id);
+		const updatedTutor = await TutorService.pull(tutor._id, id);
 
 		ctx.body = { data: updatedTutor };
 	},
@@ -143,9 +151,9 @@ export default {
 		} = ctx;
 
 		try{
-			const result = await TutorService.findOne(lc);
+			const result = await TutorService.findOne(tutor);
 
-			await setCtx(ctx, [{ user: user }, { tutor_courses: result.course }]);	
+			await setCtx(ctx, [{ user: user }, { tutor: result }, { tutor_courses: result.course }]);	
 		}catch(ex){
 			ctx.throw(400, { message: `Error. Can not get courses` });	
 		}
@@ -166,11 +174,20 @@ export default {
 		} = ctx;
 
 		try{
-			const course = await TutorService.findOne(id);
-			const result = await TutorService.findOne(lc);
+			const result = await TutorService.findOne(tutor);
+			let set = [];
 
-			await setCtx(ctx, [{ user: user }, { tutor: result }, { course: course }]); 
+			for(let i = 0; i <= result.course.length; i++){
+				if(result.course[i]){
+					if(result.course[i]._id == id){
+						set.push(result.course[i]);
+					}
+				}
+			}
+
+			await setCtx(ctx, [{ user: user }, { tutor: result }, { course: set }]); 
 		}catch(ex){
+			console.log(ex);
 			ctx.throw(400, { message: 	`Error. Can not get course` });
 		}
 	},
@@ -189,9 +206,9 @@ export default {
 		} = ctx;
 
 		try{
-			const result = await TutorService.findOne(lc);
+			const result = await TutorService.findOne(tutor);
 
-			await setCtx(ctx, [{ user: user }, { tutor: tutor }, { gallery: result.gallery }]);
+			await setCtx(ctx, [{ user: user }, { tutor: result }, { gallery: result.gallery }]);
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get gallery` });
 		}
@@ -208,7 +225,7 @@ export default {
 			}
 		} = ctx;
 
-		if(tutor.hash != hash && role != 'tutor'){
+		if(tutor.hash != hash || role != 'tutor'){
 			ctx.throw(403, `Forbidden. Tutor with hash ${tutor.hash} does not belong to user with hash ${hash}`);
 		}
 

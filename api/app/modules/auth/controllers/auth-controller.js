@@ -37,7 +37,7 @@ export default {
 		]);
 
 		if(!user && !tutor && !lc && !admin){
-			ctx.throw(400, { message: 'Not found' });
+			ctx.throw(400, { message: 'User not found' });
 		}
 
 		if(!(user || tutor || lc || admin).comparePasswords(password)){
@@ -71,7 +71,7 @@ export default {
 			}
 		} = ctx;
 
-		if(student.hash != hash && role != 'student'){
+		if(student.hash != hash || role != 'student'){
 			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
 		}
 
@@ -89,7 +89,7 @@ export default {
 			}
 		} = ctx;
 
-		if(student.hash != hash && role != 'student'){
+		if(student.hash != hash || role != 'student'){
 			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
 		}
 
