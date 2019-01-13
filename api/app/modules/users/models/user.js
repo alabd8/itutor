@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { isEmail } from 'validator';
 import bcrypt from 'bcrypt';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 
 mongoose.plugin(uniqueValidator);
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		lowercase: true,
@@ -40,9 +40,9 @@ const UserSchema = new Schema({
 	},
 	phone: {
 		type: [String],
-		validate: [ /^[0-9+]{2,}$/, `Invalid phone number`],
+		validate: [ /^[0-9+]{10,}$/, `Invalid phone number`],
 		required: 'Phone number is required',
-		trim: true,
+		trim: true
 	},
 	role: {
 		type: String,
@@ -52,20 +52,20 @@ const UserSchema = new Schema({
 		lowercase: true
 	},
 	saves: {
-		type: [Object],
+		type: [Object]
 	},
 	active: {
-		type: [Object],
+		type: [Object]
 	},
 	img: {
-		type: Object,
+		type: Object
 	},
 	hash: {
 		type: String,
 		unique: 'Hash must be unique'
 	},
 	url: {
-		type: String,
+		type: String
 	}
 }, {
 	timestamps: true

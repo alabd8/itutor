@@ -3,27 +3,44 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-async-to-generator"
+    ]
+  },
   "scripts": {
+    "test": "ava \"**/*.test.js\"",
     "start": "babel-node app/server",
     "lint": "eslint app",
     "lint:fix": "eslint --fix app",
     "dev": "nodemon --exec 'yarn lint && yarn start'"
   },
+  "ava": {
+    "require": [
+      "@babel/register",
+      "@babel/polyfill"
+    ]
+  },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-async-to-generator": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/register": "^7.0.0",
+    "ava": "^1.0.1",
+    "babel-eslint": "8.1.0",
     "eslint": "^5.1.0",
     "eslint-config-google": "^0.9.1",
     "faker": "^4.1.0",
     "nodemon": "1.17.5"
   },
   "dependencies": {
+    "@babel/node": "^7.2.2",
     "@koa/cors": "2",
     "bcrypt": "^3.0.0",
+    "bunyan": "^1.8.12",
     "config": "^1.30.0",
     "dotenv": "^6.0.0",
     "jsonwebtoken": "^8.3.0",
@@ -38,6 +55,7 @@
     "mongoose": "^5.2.4",
     "mongoose-unique-validator": "^2.0.1",
     "password-validator": "^4.1.1",
+    "supertest-koa-agent": "^0.3.0",
     "uuid": "^3.3.2",
     "validator": "^10.7.0"
   }

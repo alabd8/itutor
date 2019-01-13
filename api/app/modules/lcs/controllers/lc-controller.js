@@ -1,6 +1,7 @@
 import pick from 'lodash/pick';
 import setParamsForImage from '../../../helpers/setParamsForImage';
-import getTagsFromCotegories from '../helpers/getTagsFromCotegories';
+// import getTagsFromCotegories from '../helpers/getTagsFromCotegories';
+import { infoLog } from '../../../utils/logs/logger';
 import checkEnumValues from '../../../helpers/checkEnumValues';
 import setCtx from '../../../helpers/setCtx';
 import { LC } from '../../lcs';
@@ -11,10 +12,13 @@ export default {
 		const {
 			request: {
 				body: {
-					verify,
+					verify
 				}
 			}
 		} = ctx;
+
+		infoLog.info('Request to - /signup/lc/verify: ', ctx);
+
 		console.log("verify: ", verify);
 	},
 
@@ -22,8 +26,11 @@ export default {
 		const lcData = { 
 			...pick(ctx.request.body, LC.createFields),
 			img: await setParamsForImage(ctx),
-			authorized: true,
+			authorized: true
 		};
+
+		infoLog.info('Request to - /menu/auth/signup/center: ', ctx);
+
 
 		await checkEnumValues(ctx);
 				
@@ -31,6 +38,8 @@ export default {
 		const lc = await LCService.findOne({ _id });
 
 		await setCtx(ctx, lc);	
+
+		infoLog.info('Response to - /menu/auth/signup/center: ', ctx.body);
 					
 	},
 
@@ -39,17 +48,19 @@ export default {
 			state: {
 				user: {
 					role,
-					hash,
+					hash
 				},
-				lc,
+				lc
 			},
 			request: {
 				body: {
-					data,
+					data
 				}
 			}
 		} = ctx;
 
+		infoLog.info('Request to - /menu/courses/:hash: ', ctx);
+		
 		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
@@ -57,23 +68,26 @@ export default {
 		const result = await LCService.findOne(lc);
 
 		await setCtx(ctx, [{ user: result }, { centerCourses: result.course }]);
-	
+		
+		infoLog.info('Response to - /menu/courses/:hash: ', ctx.body);
 	},	
 
 	async update(ctx){
 		const {
 			request: {     
-				body,
+				body
 			},
 			state: {
 				user: {
 					role,
-					hash,
+					hash
 				},
 				lc,
-				id,
-			},
+				id
+			}
 		} = ctx;
+
+		infoLog.info('Request to - /menu/courses/:hash/:id: ', ctx);
 
 		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
@@ -83,21 +97,25 @@ export default {
 		const updatedLC = await LCService.push(lc._id, ctx.request.body);
 
 		await setCtx(ctx, { data: updatedLC });
+
+		infoLog.info('Response to - /menu/courses/:hash/:id: ', ctx.body);		
 	},
 
 	async updateLC(ctx){
 		const {
 			request: {     
-				body,
+				body
 			},
 			state: {
 				user: {
 					role,
-					hash,
+					hash
 				},
-				lc,
-			},
+				lc
+			}
 		} = ctx;
+
+		infoLog.info('Request to - /menu/contacts/:hash & /menu/settings/:hash: ', ctx);
 
 		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
@@ -107,6 +125,9 @@ export default {
 		const updatedLC = await LCService.updateLC(newData, lc);
 
 		ctx.body = { data: updatedLC };
+
+		infoLog.info('Response to - /menu/contacts/:hash & /menu/settings/:hash: ', ctx.body);
+		
 	},
 
 	async create(ctx){
@@ -114,36 +135,40 @@ export default {
 			state: {
 				user: {
 					role,
-					hash,
+					hash
 				},
-				lc,
+				lc
 			}
 		} = ctx;
+
+		infoLog.info('Request to - /menu/courses/:hash/new-course: ', ctx);
 
 		if(lc.hash != hash || role != 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
 
-		console.log(ctx.request.body);
-
 		const result = await LCService.push(lc._id, ctx.request.body);
 
 		ctx.status = 201;
 		ctx.body = { data: result };
+
+		infoLog.info('Response to - /menu/courses/:hash/new-course: ', ctx.body);		
 	},
 
 	async showCourses(ctx){
 		const {
 			state: {
 				user,
-				lc,
+				lc
 			},
 			request: {
 				body: {
-					data,
+					data
 				}
 			}
 		} = ctx;
+		
+		infoLog.info('Request to - /centers/:hash/courses: ', ctx);
 
 		try{
 			const result = await LCService.findOne(lc);
@@ -152,6 +177,8 @@ export default {
 		}catch(ex){
 			ctx.throw(400, { message: `Error. Can not get courses` });	
 		}
+
+		infoLog.info('Response to - /centers/:hash/courses: ', ctx.body);
 	},
 
 	async showCourse(ctx){
@@ -159,14 +186,16 @@ export default {
 			state: {
 				user,
 				lc,
-				id,
+				id
 			},
 			request: {
 				body: {
-					state,
+					state
 				}
 			}
 		} = ctx;
+		
+		infoLog.info('Request to - /centers/:hash/courses/:id: ', ctx);
 
 		try{
 			const result = await LCService.findOne(lc);
@@ -184,20 +213,25 @@ export default {
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get course` });
 		}
+
+		infoLog.info('Response to - /centers/:hash/courses/:id: ', ctx.body);
+		
 	},
 
 	async teachers(ctx){
 		const {
 			state: {
 				user,
-				lc,
+				lc
 			},
 			request: {
 				body: {
-					data,
+					data
 				}
 			}
 		} = ctx;
+
+		infoLog.info('Request to - /centers/:hash/teachers: ', ctx);
 
 		try{
 			const result = await LCService.findOne(lc);
@@ -206,6 +240,9 @@ export default {
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get teachers` });
 		}
+
+		infoLog.info('Response to - /centers/:hash/teachers: ', ctx.body);
+
 	},
 
 	async teacher(ctx){
@@ -213,15 +250,17 @@ export default {
 			state: {
 				user,
 				lc,
-				id,
+				id
 			},
 			request: {
 				body: {
-					data,
+					data
 				}
 			}
 		} = ctx;
 
+		infoLog.info('Request to - /centers/:hash/teachers/:id: ', ctx);
+		
 		try{
 			const result = await LCService.findOne(lc);
 			let set = [];
@@ -238,20 +277,25 @@ export default {
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get teacher` });
 		}
+
+		infoLog.info('Response to - /centers/:hash/teachers/:id: ', ctx.body);
+
 	},
 
 	async gallery(ctx){
 		const {
 			state: {
 				user,
-				lc,
+				lc
 			},
 			request: {
 				body: {
-					data,
+					data
 				}
 			}
 		} = ctx;
+
+		infoLog.info('Request to - /centers/:hash/gallery: ', ctx);
 
 		try{
 			const result = await LCService.findOne(lc);
@@ -260,6 +304,9 @@ export default {
 		}catch(ex){
 			ctx.throw(400, { message: 	`Error. Can not get gallery` });
 		}
+
+		infoLog.info('Response to - /centers/:hash/gallery: ', ctx.body);
+
 	},
 
 	async delete(ctx){
@@ -267,19 +314,24 @@ export default {
 			state: {
 				user: {
 					hash,
-					role,
+					role
 				},
 				lc,
-				id,
-			},
+				id
+			}
 		} = ctx;
+
+		infoLog.info('Request to delete - /menu/courses/:hash/:id: ', ctx);
 
 		if(lc.hash !== hash || role !== 'center'){
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" doesn't belong to user with hash "${hash}"`);
 		}
-
+		
 		const updatedLC = await LCService.pull(lc._id, id);
 
 		ctx.body = { data: updatedLC };
-	},
+
+		infoLog.info('Response to delete - /menu/courses/:hash/:id: ', ctx.body);
+
+	}
 }

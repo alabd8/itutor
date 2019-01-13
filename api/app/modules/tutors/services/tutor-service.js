@@ -20,11 +20,11 @@ export default {
 	},
 
 	async pull(tutorId, courseId){
-		return Tutor.findByIdAndUpdate(tutorId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
+		return Tutor.findByIdAndUpdate(tutorId, { $pull: { 'course': { _id: courseId } } }, { 'new': true });
 	},
 
 	async push(tutorId, data){
-		return Tutor.findByIdAndUpdate(tutorId, { $push: { 'course': data }}, { 'new': true });
+		return Tutor.findByIdAndUpdate(tutorId, { $push: { 'course': data } }, { 'new': true });
 	},
 	
 	async getRecommended(params){
@@ -36,11 +36,11 @@ export default {
 	},
 
 	async findOne(params){
-		return Tutor.findOne(params).select({ _id: 0, password: 0, createdAt: 0, __v: 0, });
+		return Tutor.findOne(params).select({ _id: 0, password: 0, createdAt: 0, __v: 0 });
 	},
 
 	async countTutor(params){
-		return Tutor.find(params).count().select({ _id: 0, password: 0, createdAt: 0, __v: 0, });
+		return Tutor.find(params).count().select({ _id: 0, password: 0, createdAt: 0, __v: 0 });
 	},
 
 	async find(){

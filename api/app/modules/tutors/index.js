@@ -30,5 +30,5 @@ router
 export default router.routes();
 
 export {
-	Tutor,
+	Tutor
 };

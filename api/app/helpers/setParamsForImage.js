@@ -10,7 +10,7 @@ export default async function setParamsForImage(ctx){
 			fileName: file.path.slice(-43), 
 			type : file.type,
 			path : file.path,
-			lastModifiedDate : file.lastModifiedDate, 
+			lastModifiedDate : file.lastModifiedDate 
 		};	
 	}else{
 		ctx.throw(400, `Error. Cannot read the file format`);

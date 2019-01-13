@@ -20,11 +20,11 @@ export default {
 	},
 
 	async pull(lcId, courseId){
-		return LC.findByIdAndUpdate(lcId, { $pull: { 'course': { _id: courseId }}}, {'new': true });
+		return LC.findByIdAndUpdate(lcId, { $pull: { 'course': { _id: courseId } } }, { 'new': true });
 	},
 
 	async push(lcId, data){
-		return LC.findByIdAndUpdate(lcId, { $push: { 'course': data }}, { 'new': true });
+		return LC.findByIdAndUpdate(lcId, { $push: { 'course': data } }, { 'new': true });
 	},
 
 	async getRecommended(params){
@@ -49,6 +49,6 @@ export default {
 
 	async count(){
 		return LC.count();
-	},
+	}
 
 };

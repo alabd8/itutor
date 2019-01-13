@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { isEmail } from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
 import bcrypt from 'bcrypt';
@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 
 mongoose.plugin(uniqueValidator);
 
-const LCSchema = new Schema({
+const LCSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		lowercase: true,
@@ -16,92 +16,92 @@ const LCSchema = new Schema({
 	title: {
 		languages: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}	
 		}],
 		sciences: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		information: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		prof: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		extra: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		сreative: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		combined: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}	
 		}],
 		unpaid: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
-		}],
+		}]
 	},
 	tags: {
 		type: [String],
@@ -112,7 +112,7 @@ const LCSchema = new Schema({
 		type: [String],
 		validate: [ /^[0-9+]{10,}$/, `Invalid phone number` ],
 		required: 'Phone number is required',
-		trim: true,
+		trim: true
 	},
 	email: {
 		type: String,
@@ -120,13 +120,13 @@ const LCSchema = new Schema({
 		lowercase: true,
 		validate: [ isEmail, `Invalid Email '{VALUE}'` ],
 		required: 'Email is required',
-		trim: true,
+		trim: true
 	},
 	password: {
 		type: String,
 		validate: [ /^[a-zA-Z0-9@_-]{8,32}$/, `Password character must contain the following 'a-zA-Z0-9@_-'` ],
 		required: 'Password is required',
-		trim: true,
+		trim: true
 	},
 	description: {
 		type: String,
@@ -134,7 +134,7 @@ const LCSchema = new Schema({
 		default: false
 	},
 	workingTime: {
-		type: [String],
+		type: [String]
 	},
 	address: {
 		type: String,
@@ -153,7 +153,7 @@ const LCSchema = new Schema({
 		lowercase: true
 	},
 	img: {
-		type: Object,
+		type: Object
 	},
 	reviews: [{
 		name: {
@@ -164,41 +164,41 @@ const LCSchema = new Schema({
 		role: {
 			type: String,
 			required: `Role is required`,
-			trim: true,
+			trim: true
 		},
 		text: {
 			type: String,
-			required: `Comment is required`,
+			required: `Comment is required`
 		},
 		starCount: {
 			type: Number,
-			default: 0,
-		},
+			default: 0
+		}
 	}],
 	teachers: [{
 		teacherLink: {
 			type: String,
 			required: `Teacher link is required`,
-			trim: true,
+			trim: true
 		},
 		teacherName: {
 			type: String,
 			required: `Teacher name is required`,
-			trim: true,
+			trim: true
 		},
 		teacherTags: {
 			type: [String],
 			required: `Teacher tags are required`,
-			trim: true,
+			trim: true
 		},
 		teacherDescription: {
 			type: String,
 			required: `Teacher Description is required`,
-			trim: true,
+			trim: true
 		},
 		reviews: {
-			type: [Object],
-		},
+			type: [Object]
+		}
 	}],
 	course: [{
 		name: {
@@ -237,7 +237,7 @@ const LCSchema = new Schema({
 		},
 		starCount: {
 			type: Number,
-			default: 0,
+			default: 0
 		},
 		sticker: {
 			type: String,
@@ -279,7 +279,7 @@ const LCSchema = new Schema({
 			courseType: {
 				type: String,
 				default: false
-			},
+			}
 		}
 	}],
 	gallery: {
@@ -298,29 +298,29 @@ const LCSchema = new Schema({
 	},
 	recommended: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	saves: {
-		type: [Object],
+		type: [Object]
 	},
 	active: {
-		type: [Object],
+		type: [Object]
 	},
 	starCount: {
 		type: Number,
-		default: 0,
+		default: 0
 	},
 	hash: {
 		type: String,
 		unique: 'Hash must be unique'
 	},
 	url: {
-		type: String,
+		type: String
 	},
 	authorized: {
 		type: Boolean,
-		default: false,
-	},
+		default: false
+	}
 }, {
 	timestamps: true
 });

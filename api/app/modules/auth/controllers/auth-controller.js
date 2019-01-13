@@ -1,21 +1,21 @@
 import pick from 'lodash/pick';
+
 import { User } from '../../users';
-import { Tutor } from '../../tutors';
-import { LC } from '../../lcs';
-import { Admin } from '../../admin';
 // import { Moderator } from '../../moderator';
-import jwtService from '../../../services/jwt-service';
 import setParamsForImage from '../../../helpers/setParamsForImage';
 import checkEnumValues from '../../../helpers/checkEnumValues';
 import setCtx from '../../../helpers/setCtx';
+import findUser from '../../../helpers/findUser';
+import { infoLog } from '../../../utils/logs/logger';
+import issueTokenPair from '../../../helpers/issueTokenPair';
 import { UserService } from '../../users/services';
-import { TutorService } from '../../tutors/services';
-import { LCService } from '../../lcs/services';
 
 export default {
 	async signup(ctx){
 		const userData = pick(ctx.request.body, User.createFields);
-			  userData.img = await setParamsForImage(ctx);
+			userData.img = await setParamsForImage(ctx);
+
+		infoLog.info('Request to - /menu/auth/signup/student: ', ctx);
 
 		await checkEnumValues(ctx);
 
@@ -23,41 +23,44 @@ export default {
 		const user = await UserService.getUserWithPublicFields({ _id });
 		
 		await setCtx(ctx, user);
+		
+		infoLog.info('Response to - /menu/auth/signup/student: ', ctx.body);
 	}, 
 
 	async login(ctx){
 		const { email, password } = ctx.request.body;
 
-		const [ user, tutor, lc, admin ] = await Promise.all([
-			await User.findOne({ email }),
-			await Tutor.findOne({ email }),
-			await LC.findOne({ email }),
-			await Admin.findOne({ email }),
-			// await Moderator.findOne({ email }),
-		]);
+		const exist = await findUser(email);
 
-		if(!user && !tutor && !lc && !admin){
-			ctx.throw(400, { message: 'User not found' });
+		infoLog.info('Request to - /menu/auth/signin: ', ctx);
+
+		if(!exist){
+			ctx.throw(403, { message: 'User not found' });
 		}
 
-		if(!(user || tutor || lc || admin).comparePasswords(password)){
-			ctx.throw(400, { message: 'Invalid password' });
-		}
-		
-		const token = await jwtService.genToken({ email });
-		
-		ctx.body = { data: token };
+		if(!(exist).comparePasswords(password)){
+			ctx.throw(403, { message: 'Invalid password' });
+		}		
+
+		ctx.body = await issueTokenPair(email, exist._id);
+
+		infoLog.info('Response to - /menu/auth/signin: ', ctx.body);
 
 	},
 
 	async access(ctx){
 		const {
 			state: {
-				user,
+				user
 			}
 		} = ctx;
 
+		infoLog.info('Request to - /menu/auth/access: ', ctx);
+
 		await setCtx(ctx, { user: user });
+		
+		infoLog.info('Response to - /menu/auth/access: ', ctx.body);
+
 	},
 
 	async currentUser(ctx){
@@ -65,17 +68,21 @@ export default {
 			state: {
 				user: { 
 					hash,
-					role,
+					role
 				},
-				student,
+				student
 			}
 		} = ctx;
+
+		infoLog.info('Request to current - /user: ', ctx);
 
 		if(student.hash != hash || role != 'student'){
 			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
 		}
 
 		await setCtx(ctx, { user: user });
+
+		infoLog.info('Response to current - /user: ', ctx.body);
 	},
 
 	async deleteUser(ctx){
@@ -83,11 +90,13 @@ export default {
 			state: { 
 				user: {
 					role,
-					hash,
+					hash
 				},
-				student,
+				student
 			}
 		} = ctx;
+
+		infoLog.info('Request to delete - /user: ', ctx);
 
 		if(student.hash != hash || role != 'student'){
 			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
@@ -96,6 +105,8 @@ export default {
 		await student.remove();
 
 		await setCtx(ctx, { hash: student.hash });
-	},
+
+		infoLog.info('Response to delete- /user: ', ctx.body);
+	}
 };
 

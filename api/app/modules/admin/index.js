@@ -11,5 +11,5 @@ const router = new Router({ prefix: '/admin' });
 export default router.routes();
 
 export { 
-	Admin,
+	Admin
 }

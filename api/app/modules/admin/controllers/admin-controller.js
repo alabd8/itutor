@@ -6,7 +6,7 @@ export default {
 	async menu(ctx){
 		const {
 			state: {
-				user,
+				user
 			}
 		} = ctx;
 
@@ -16,7 +16,7 @@ export default {
 	async statistics(ctx){
 		const {
 			state: {
-				user,
+				user
 			}
 		} = ctx;
 
@@ -27,7 +27,7 @@ export default {
 	async moderators(ctx){
 		const {
 			state: {
-				user,
+				user
 			}	
 		} = ctx;
 		

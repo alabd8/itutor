@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { isEmail } from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
 import bcrypt from 'bcrypt';
@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 
 mongoose.plugin(uniqueValidator);
 
-const TutorSchema = new Schema({
+const TutorSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		lowercase: true,
@@ -27,92 +27,92 @@ const TutorSchema = new Schema({
 	title: {
 		languages: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}	
 		}],
 		sciences: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}	
 		}],
 		information: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		prof: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		extra: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		сreative: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
 		}],
 		combined: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}	
 		}],
 		unpaid: [{
 			title: {
-				type: [String],
+				type: [String]
 			},
 			tags: {
 				type: [String]
 			},
 			_id: {
-				type: Schema.Types.ObjectId, 
+				type: mongoose.Schema.Types.ObjectId 
 			}
-		}],
+		}]
 	},
 	tags: {
 		type: [String],
@@ -123,7 +123,7 @@ const TutorSchema = new Schema({
 		type: [String],
 		required: 'Phone number is required',
 		validate: [ /^[0-9+]{10,}$/, `Invalid phone number` ],
-		trim: true,
+		trim: true
 	},
 	email: {
 		type: String,
@@ -131,20 +131,20 @@ const TutorSchema = new Schema({
 		lowercase: true,
 		validate: [ isEmail, `Invalid Email '{VALUE}'` ],
 		required: 'Email is required',
-		trim: true,
+		trim: true
 	},
 	password: {
 		type: String,
 		validate: [ /^[a-zA-Z0-9@_-]{8,32}$/, `Password character must contain the following 'a-zA-Z0-9@_-'` ],
 		required: 'Password is required',
-		trim: true,
+		trim: true
 	},
 	description: {
 		type: String,
 		lowercase: true
 	},
 	workingTime: {
-		type: [String],
+		type: [String]
 	},
 	address: {
 		type: String,
@@ -163,11 +163,11 @@ const TutorSchema = new Schema({
 		lowercase: true
 	},
 	img: {
-		type: Object,
+		type: Object
 	},
 	recommended: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	hash: {
 		type: String,
@@ -177,37 +177,37 @@ const TutorSchema = new Schema({
 		companyName: {
 			type: String,
 			required: 'Company name is required',
-			trim: true,
+			trim: true
 		},
 		title: {
 			type: String,
 			required: 'Title is required',
-			trim: true,
+			trim: true
 		},
 		date: {
 			start: {
 				type: Date,
-				required: 'Start date is required',
+				required: 'Start date is required'
 			},
 			end: {
 				type: Date
-			},
+			}
 		},
 		current: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		description: {
 			type: String,
 			required: 'Desription is required',
-			trim: true,
-		},
+			trim: true
+		}
 	}],
 	saves: {
-		type: [Object],
+		type: [Object]
 	},
 	active: {
-		type: [Object],
+		type: [Object]
 	},
 	coords: {
 		lat: {
@@ -221,11 +221,11 @@ const TutorSchema = new Schema({
 	},
 	state: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	starCount: {
 		type: Number,
-		default: 0,
+		default: 0
 	},
 	course: [{
 		name: {
@@ -264,7 +264,7 @@ const TutorSchema = new Schema({
 		},
 		starCount: {
 			type: Number,
-			default: 0,
+			default: 0
 		},
 		sticker: {
 			type: String,
@@ -306,7 +306,7 @@ const TutorSchema = new Schema({
 			courseType: {
 				type: String,
 				default: false
-			},
+			}
 		}
 	}],
 	gallery: {
@@ -318,12 +318,12 @@ const TutorSchema = new Schema({
 		default: false
 	},
 	url: {
-		type: String,
+		type: String
 	},
 	authorized: {
 		type: Boolean,
-		default: false,
-	},
+		default: false
+	}
 }, {
 	timestamps: true
 	// , toJSON: { virtuals: true }

@@ -5,11 +5,11 @@ import { LC } from '../modules/lcs';
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
-
+	
 	if(authorization){
 		try{
-			let { email } = await jwtService.verify(authorization);
-	
+			const { email } = await jwtService.verify(authorization);
+			
 			const user = await User.findOne({ email });
 			
 			if(user){

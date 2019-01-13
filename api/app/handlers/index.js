@@ -1,4 +1,5 @@
 import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
 import serve from 'koa-static';
 import logger from 'koa-logger';
 import error from './error';
@@ -10,7 +11,7 @@ export default (app) => {
 		app.use(logger());
 	}
 
-
+	app.use(cors());
 	app.use(error());
 	app.use(require('koa-body')({
 	    formidable:{
@@ -18,7 +19,7 @@ export default (app) => {
 	        keepExtensions: true // keep file extension on upload
 	    },
 	    multipart: true,
-	    urlencoded: true,
+	    urlencoded: true
 	}));
 	app.use(serve('../../images'));
 	app.use(bodyParser());

@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 import bcrypt from 'bcrypt';
 import { isEmail } from 'validator';
@@ -6,27 +6,27 @@ import uuid from 'uuid/v4';
 
 mongoose.plugin(uniqueValidator);
 
-const AdminSchema = new Schema({
+const AdminSchema = new mongoose.Schema({
 	email: {
 		type: String,
 		required: 'Email is required',
 		validate: [ isEmail, `Invalid Email '{VALUE}'` ],
 		lowercase: true,
 		trim: true,
-		unique: 'User email with "{VALUE}" already exist',
+		unique: 'User email with "{VALUE}" already exist'
 	},
 	password: {
 		type: String,
 		required: 'Password is required',
-		trim: true,
+		trim: true
 	},
 	role: {
-		type: Number,
+		type: Number
 	},
 	hash: {
 		type: String,
 		unique: 'Hash must be unique'
-	},
+	}
 });
 
 

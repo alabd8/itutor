@@ -1,5 +1,4 @@
 import Koa from 'koa';
-import cors from '@koa/cors';
 import connectorsInit from './connectors';
 import initHandlers from './handlers';
 import modules from './modules';
@@ -10,8 +9,6 @@ connectorsInit();
 global.AppError = AppError;
 
 const app = new Koa();	
-
-app.use(cors());
 
 initHandlers(app);
 

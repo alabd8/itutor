@@ -31,6 +31,6 @@ router
 export default router.routes();
 
 export {
-	LC,
+	LC
 };
 	
