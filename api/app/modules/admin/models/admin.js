@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 import { isEmail } from 'validator';
 import uuid from 'uuid/v4';
 
