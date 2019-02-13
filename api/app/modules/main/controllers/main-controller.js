@@ -6,11 +6,27 @@ import menu from '../helpers/menu';
 import { infoLog, debLog } from '../../../utils/logs/logger';
 import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
+import validator from '../helpers/validator';
 import { LCService } from '../../lcs/services';
 import { TutorService } from '../../tutors/services';
 
 export default {
 	async main(ctx){
+		const {
+			request: {
+				body,
+			}
+		} = ctx;
+
+		infoLog.info('Request to - /: ', ctx);
+		
+		await validator(ctx, body);
+
+		infoLog.info('Response to - /: ', ctx.body);
+
+	},
+
+	async home(ctx){
 		const {
 			state: {
 				user

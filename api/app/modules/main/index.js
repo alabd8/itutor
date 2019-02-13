@@ -4,10 +4,11 @@ import mainController from './controllers/main-controller';
 const router = new Router();
 
 router
-	.post('/home', mainController.main)
+	.post('/', mainController.main)
+	.post('/home', mainController.home)
 	.post('/home/select', mainController.selected)
 	.post('/home/results', mainController.search)
-	.post('/search', mainController.main)
+	.post('/search', mainController.home)
 	.post('/menu', mainController.menu)
 	.post('/aliveoprstate/checkTrack', mainController.check);
 
