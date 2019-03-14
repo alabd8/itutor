@@ -1,13 +1,13 @@
-import { Tutor } from '../';
+import { User } from '../../users';
 
 export default () => async (hash, ctx, next) => {
-	const tutor = await Tutor.findOne({ hash });
+	const user = await User.findOne({ hash }).select({ password: 0 });
 
-	if(!tutor){
+	if(!user){
 		ctx.throw(404, `Tutor with hash "${hash}" not found`);
 	}
 
-	ctx.state.tutor = tutor;
+	ctx.state.tutor = user;
 
 	await next();
 };

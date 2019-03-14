@@ -1,16 +1,13 @@
 import Router from 'koa-router';
 import tutorController from './controllers/tutor-controller';
 import checkUser from '../../handlers/checkUser';
-import accessUser from '../../handlers/accessUser';
 import checkID from './handlers/checkID';
 import checkTutor from './handlers/checkTutor';
-import { Tutor } from './models';
 
 
 const router = new Router();
 
 router
-	.post('/menu/auth/signup/tutor', accessUser(), tutorController.signup)
 	.param('hash', checkTutor())
 	.param('id', checkID())
 	.post('/menu/teachers/:hash', checkUser(), tutorController.getTutor)
@@ -28,7 +25,3 @@ router
 	
 
 export default router.routes();
-
-export {
-	Tutor
-};

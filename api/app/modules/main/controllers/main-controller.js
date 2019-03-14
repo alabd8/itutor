@@ -7,20 +7,28 @@ import { infoLog, debLog } from '../../../utils/logs/logger';
 import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
 import validator from '../helpers/validator';
-import { LCService } from '../../lcs/services';
-import { TutorService } from '../../tutors/services';
+import { valid1, valid2 } from '../constants';
+import { UserService } from '../../users/services';
 
 export default {
 	async main(ctx){
 		const {
 			request: {
 				body,
+				ip,
 			}
 		} = ctx;
-
-		infoLog.info('Request to - /: ', ctx);
 		
-		await validator(ctx, body);
+		console.log('IP: ', ip);
+		
+		infoLog.info('Request to - /: ', ctx);
+
+		if(ip === valid1 && ip === valid2){
+			await validator(ctx, body);
+		}else{
+			ctx.status = 200;
+			ctx.body = tutor;
+		}
 
 		infoLog.info('Response to - /: ', ctx.body);
 
@@ -29,7 +37,7 @@ export default {
 	async home(ctx){
 		const {
 			state: {
-				user
+				user,
 			},
 			request: {
 				body: {
@@ -39,7 +47,7 @@ export default {
 		} = ctx;
 
 		infoLog.info('Request to - /home & /search: ', ctx);
-
+		
 		await search(ctx, user, data);
 
 		infoLog.info('Response to - /home & /search: ', ctx.body);
@@ -121,7 +129,7 @@ export default {
 			}
 		} = ctx;
 
-		const lc = await LCService.searchLCs({ hash });
+		const lc = await UserService.searchLCs({ hash });
 
 		ctx.body = lc;
 	},
@@ -135,7 +143,7 @@ export default {
 			}
 		} = ctx;																																							
 
-		const tutor = await TutorService.searchTutors({ hash });
+		const tutor = await UserService.searchTutors({ hash });
 
 		ctx.body = tutor;
 	},

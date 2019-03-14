@@ -1,6 +1,3 @@
-import { LC } from '../models';
-import { Tutor } from '../../tutors';
-
 export default {
 	
 	async getTags(){

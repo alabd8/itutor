@@ -1,5 +1,6 @@
-import { User } from './models';
+import { User, Payment } from './models';
 
 export {
-	User
+	User,
+	Payment
 };

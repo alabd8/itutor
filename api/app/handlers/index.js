@@ -4,6 +4,7 @@ import serve from 'koa-static';
 import logger from 'koa-logger';
 import error from './error';
 import jwt from './jwt';
+import checkAmount from './checkAmount';
 import { IS_DEV } from '../utils/env';
 
 export default (app) => {
@@ -24,4 +25,5 @@ export default (app) => {
 	app.use(serve('../../images'));
 	app.use(bodyParser());
 	app.use(jwt());
+	app.use(checkAmount());
 }

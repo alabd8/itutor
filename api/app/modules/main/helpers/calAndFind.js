@@ -1,27 +1,35 @@
-import { LCService } from '../../lcs/services';
-import { TutorService } from '../../tutors/services';
-import setCtx from '../../../helpers/setCtx';
-import cal from './cal';
+import calculate from './cal';
+import { UserService } from '../../users/services';
 
-export default async (body = null) => {
-	if(body){
-		const result = await cal(body);
+export default async (body) => {
+    const coords = await calculate(body);
 
-		const lcs = await LCService.find()
-		const tutors = await TutorService.find();
+    const objects = await UserService.find(); 
+    let result = [];
+    let rest = [];
 
-		const rest = [...lcs, ...tutors];
-
-		let res = [];
-					
-		for(let i = 0; i < rest.length; i++){
-			if(rest[i].coords.lat <= result.north && rest[i].coords.lat >= result.south){
-				if(rest[i].coords.long >= result.west && rest[i].coords.long <= result.east){
-					res.push(rest[i]);
-				}
-			}
-		}
-
-		return res;	
-	}
+    for(let i = 0; i < objects.length; i++){
+        if(objects[i].page.course.length >= 1){
+            for(let j = 0; j < objects[i].page.course.length; j++){
+                if(objects[i].page.course[j].coords.lat && objects[i].page.course[j].coords.long){
+                    rest.push(objects[i]);
+                    break;
+                }
+            }
+        }
+    }
+    
+    for(let i = 0; i < rest.length; i++){
+        if(rest[i].page.course.length >= 1){
+            for(let j = 0; j < rest[i].page.course.length; j++){
+                if(rest[i].page.course[j].coords.lat <= coords.north && rest[i].page.course[j].coords.lat >= coords.south){
+                    if(rest[i].page.course[j].coords.long >= coords.west && rest[i].page.course[j].coords.long <= coords.east){
+                        result.push(rest[i].page.course[j]);                        
+                    }
+                }
+            }
+        }
+    }
+    
+    return result;
 }

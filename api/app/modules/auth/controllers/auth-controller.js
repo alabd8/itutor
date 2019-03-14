@@ -1,23 +1,24 @@
 import pick from 'lodash/pick';
+import { infoLog } from '../../../utils/logs/logger';
 
-import { User } from '../../users';
-// import { Moderator } from '../../moderator';
-import setParamsForImage from '../../../helpers/setParamsForImage';
 import checkEnumValues from '../../../helpers/checkEnumValues';
 import setCtx from '../../../helpers/setCtx';
-import findUser from '../../../helpers/findUser';
-import { infoLog } from '../../../utils/logs/logger';
 import issueTokenPair from '../../../helpers/issueTokenPair';
+import extract from '../helpers/extract';
+import setParamsForImage from '../../../helpers/setParamsForImage';
+import updatingUser from '../../../helpers/updatingUser';
+
+import { User, Payment } from '../../users';
 import { UserService } from '../../users/services';
+
 
 export default {
 	async signup(ctx){
-		const userData = pick(ctx.request.body, User.createFields);
-			userData.img = await setParamsForImage(ctx);
+		await checkEnumValues(ctx);
+
+		const userData = await extract(ctx);
 
 		infoLog.info('Request to - /menu/auth/signup/student: ', ctx);
-
-		await checkEnumValues(ctx);
 
 		const { _id } = await UserService.createUser(userData);
 		const user = await UserService.getUserWithPublicFields({ _id });
@@ -30,37 +31,25 @@ export default {
 	async login(ctx){
 		const { email, password } = ctx.request.body;
 
-		const exist = await findUser(email);
+		const user = await User.findOne({ email });
 
 		infoLog.info('Request to - /menu/auth/signin: ', ctx);
 
-		if(!exist){
-			ctx.throw(403, { message: 'User not found' });
+		if(!user){
+			ctx.throw(403, { 
+				message: 'User not found' 
+			});
 		}
 
-		if(!(exist).comparePasswords(password)){
-			ctx.throw(403, { message: 'Invalid password' });
+		if(!(user).comparePasswords(password)){
+			ctx.throw(403, { 
+				message: 'Invalid password' 
+			});
 		}		
 
-		ctx.body = await issueTokenPair(email, exist._id);
+		ctx.body = await issueTokenPair(email, user._id);
 
 		infoLog.info('Response to - /menu/auth/signin: ', ctx.body);
-
-	},
-
-	async access(ctx){
-		const {
-			state: {
-				user
-			}
-		} = ctx;
-
-		infoLog.info('Request to - /menu/auth/access: ', ctx);
-
-		await setCtx(ctx, { user: user });
-		
-		infoLog.info('Response to - /menu/auth/access: ', ctx.body);
-
 	},
 
 	async currentUser(ctx){
@@ -80,11 +69,46 @@ export default {
 			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
 		}
 
-		await setCtx(ctx, { user: user });
+		const result = await UserService.findOne({ hash: student.hash });
+
+		await setCtx(ctx, { data: result });
 
 		infoLog.info('Response to current - /user: ', ctx.body);
 	},
 
+	async updateStudent(ctx){
+		const {
+			request: {
+				body,
+			},
+			state: {
+				user: {
+					role,
+					hash
+				},
+				student
+			}
+		} = ctx;
+
+		infoLog.info('Request to current - /user/settings: ', ctx);
+
+		if(student.hash !== hash || role !== 'student'){
+			ctx.throw(403, `Forbidden. Student with hash "${student.hash}"
+							doesn't belong to user with hash "${hash}"`);
+		}
+
+		const newData = pick(body, User.createFields);
+
+		if(newData.role !== 'student'){
+			throw new AppError({ status: 400, message: `Error on updating "role"` });			
+		}
+		let img = await setParamsForImage(ctx);			  
+
+		await updatingUser(img, newData, student, ctx);
+
+		infoLog.info('Response to current - /user/settings: ', ctx.body);
+
+	},
 	async deleteUser(ctx){
 		const { 
 			state: { 

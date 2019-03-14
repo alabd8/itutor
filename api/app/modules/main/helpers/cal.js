@@ -2,6 +2,7 @@ import { HUN, KM } from '../constants';
 
 export default async (params) => {
 	if(params.coords){
+
 		const lat = params.coords.lat * HUN;
 		const long = params.coords.long * HUN;
 
@@ -10,6 +11,6 @@ export default async (params) => {
 		const west = (( long - KM ) / HUN );
 		const east = (( long + KM ) / HUN );
 
-		return { north: north, south: south, west: west, east: east }; 
+		return { north, south, west, east }; 
 	}
 }

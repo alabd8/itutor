@@ -1,4 +1,5 @@
-import findUser from '../../../helpers/findUser';
+import { User } from '../../users';
+import { UserService } from '../../users/services';
 import issueTokenPair from '../../../helpers/issueTokenPair'; 
 import { TokenService } from '../services';
 
@@ -9,15 +10,13 @@ export default {
         const dbToken = await TokenService.findToken({ token: refreshToken });
         if(!dbToken){
             return;
-        }
-
-        const exist = await findUser(dbToken.email);
-
+        }   
+        const user = await UserService.findOne({ email: dbToken.email });
         await TokenService.removeToken({
             token: `${refreshToken}`
         });
 
-        ctx.body = await issueTokenPair(dbToken.email, exist._id);
+        ctx.body = await issueTokenPair(dbToken.email, user._id);
     },
 
     async logout(ctx){

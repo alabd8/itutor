@@ -1,29 +1,30 @@
-import { LCService } from '../../lcs/services';
-import { TutorService } from '../../tutors/services';
+import { UserService } from '../../users/services';
+import { User } from '../../users';
 import setCtx from '../../../helpers/setCtx'; 
 
 export default async (ctx, user, result, body = null) => {
-	const lcs = await LCService.getRecommended({ recommended: true });
-	const tutors = await TutorService.getRecommended({ recommended: true });
+	const title = body.params.title;
+	const category = body.params.category;
+	const data = async (role) => {
+		let data;
+		if(role){
+			data = { role, 'page.course.title': title, 'page.course.category': category}
+		}else{
+			data = { 'page.course.title': title, 'page.course.category': category}
+		}
+		return data;
+	}
+	const recommended = await UserService.getRecommended({ recommended: true });
+	
 	if(body.data === 'center'){
-		const centers = await LCService.getRecommended(body.params);
-		return await setCtx(ctx, [{ user: user }, { centers: centers }, 
-								  { recommendedLCs: lcs, recommendedTutors: tutors }, 
-								  { resultByCoords: result }
-								 ]);
+		const centers = await UserService.getRecommended(await data('center'));
+		return await setCtx(ctx, [{ user }, { centers }, { recommended },  { resultByCoords: result } ]);
 	}else if(body.data === 'tutor'){
-		const tutors = await TutorService.getRecommended(body.params);
-		return await setCtx(ctx, [{ user: user }, { tutors: tutors }, 
-								  { recommendedLCs: lcs, recommendedTutors: tutors },
-								  { resultByCoords: result }
-								 ]);
-	}else if(body.data === 'both' || !body.data){
-		const centers = await LCService.getRecommended(body.params);
-		const tutors = await TutorService.getRecommended(body.params);
-		return await setCtx(ctx, [{ user: user }, { centers: centers, tutors: tutors }, 
-								  { recommendedLCs: lcs, recommendedTutors: tutors },
-								  { resultByCoords: result }
-								 ]);
+		const tutors = await UserService.getRecommended(await data('tutor'));
+		return await setCtx(ctx, [{ user }, { tutors }, { recommended }, { resultByCoords: result } ]);
+	}else if(body.data === 'both'){
+		const both = await User.find(await data());
+		return await setCtx(ctx, [{ user }, { both }, { recommended }, { resultByCoords: result } ]);
 	}else if(!body){
 		ctx.throw(404, `Error data`);
 	}

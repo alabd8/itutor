@@ -1,13 +1,13 @@
-import { LC } from '../';
+import { User } from '../../users';
 
 export default () => async (hash, ctx, next) => {
-	const lc = await LC.findOne({ hash });
+	const user = await User.findOne({ hash }).select({ password: 0 });
 
-	if(!lc){
+	if(!user){
 		ctx.throw(404, `Learning Centre with hash "${hash}" not found`);
 	}
 
-	ctx.state.lc = lc;
+	ctx.state.lc = user;
 
 	await next();
 };
