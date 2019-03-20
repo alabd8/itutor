@@ -8,7 +8,7 @@ import checkID from './handlers/checkID';
 const router = new Router();
 
 router
-	.post('/signup/lc/verify', accessUser(), lcController.verify)
+	.post('/menu/auth/signup/lc/verify', accessUser(), lcController.verify)
 	.param('hash', checkLC())
 	.param('id', checkID())
 	.post('/menu/courses/:hash', checkUser(), lcController.getLC)

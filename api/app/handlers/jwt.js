@@ -7,9 +7,9 @@ export default () => async (ctx, next) => {
 	if(authorization){
 		try{
 			const { email } = await jwtService.verify(authorization);
-			
+
 			const user = await User.findOne({ email });
-			
+	
 			if(user){
 				ctx.state.user = user;
 			}

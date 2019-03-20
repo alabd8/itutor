@@ -8,7 +8,7 @@ export default {
 			throw new AppError({ status: 400, ...ex });
 		}
 	},
-	async updateUser(data, user) {
+	async updateUser(data, user){
 		user.set(data);
 		try {
 			return user.save();
@@ -25,8 +25,8 @@ export default {
 	async push(id, data){
 		return User.findByIdAndUpdate(id, { $push: { 'page.course': data } }, { 'new': true });
 	},
-	async find(){
-		return User.find().select({ createdAt: 0, password: 0, _id: 0, __v: 0 });
+	async find(params){
+		return User.find(params).select({ createdAt: 0, password: 0, _id: 0, __v: 0 });
 	},
 	async findOne(params){
 		return User.findOne(params).select({ createdAt: 0, password: 0, __v: 0 });
@@ -45,5 +45,5 @@ export default {
 	},
 	async getUserTitleWithPublicFields(){
 		return User.find().sort({ title: -1 }).select({ createdAt: 0, updatedAt: 0, password: 0, _id: 0,  __v: 0 });
-	},
+	}
 };

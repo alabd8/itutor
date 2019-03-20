@@ -3,9 +3,9 @@ export default () => async (ctx, next) => {
 		ctx.throw(403, { message: 'Forbidden' });
 	}
 
-	if(ctx.state.user.role = 10){
-		await next();
-	}else{
+	if(ctx.state.user.role !== 'admin'){
 		ctx.throw(403, { message: 'Forbidden' });
 	}
+
+	await next();
 };

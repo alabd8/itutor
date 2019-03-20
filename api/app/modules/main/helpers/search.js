@@ -12,7 +12,7 @@ export default async (ctx, user, data = null) => {
 	}else if(data === 'getTags'){
 		const tags = await constants.getTags();
 		return await setCtx(ctx, { user, tags });
-	}else if(!data){
+	}else{
 	 	const recommended = await UserService.getRecommended({ recommended: true });
 		const titles = await constants.getTitles();
 		const tags = await constants.getTags();

@@ -1,12 +1,13 @@
 import pick from 'lodash/pick';
 
 import { debLog, infoLog } from '../utils/logs/logger';
+import { UserService } from '../modules/users/services';
 import { PaymentService } from '../modules/users/services';
 import { Payment } from '../modules/users';
 
 export default async (user, dbModel) => {
     const date = Date.now();
-
+    
     if(user.params.time_end >= date){
         let payment = await PaymentService.getPaymentWithPublicFields({ userHash: user.hash });
         

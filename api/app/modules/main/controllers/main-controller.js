@@ -103,8 +103,8 @@ export default {
 
 		infoLog.info('Request to - /menu: ', ctx);
 		
-		await menu(ctx, user);
-
+		// await menu(ctx, user);
+		ctx.body = { user }
 		infoLog.info('Response to - /menu: ', ctx.body);
 
 	},
@@ -118,45 +118,5 @@ export default {
 
 		infoLog.info('Request to - /aliveoprstate/checkTrack: ', ctx);
 		debLog.debug('Request to - /aliveoprstate/checkTrack: ', ctx);
-	},
-
-	async aboutLC(ctx){
-		const { 
-			state: {
-				user: {
-					hash
-				}
-			}
-		} = ctx;
-
-		const lc = await UserService.searchLCs({ hash });
-
-		ctx.body = lc;
-	},
-
-	async aboutT(ctx){
-		const { 
-			state: {
-				user: {
-					hash
-				}
-			}
-		} = ctx;																																							
-
-		const tutor = await UserService.searchTutors({ hash });
-
-		ctx.body = tutor;
-	},
-
-	async menuCourses(ctx){
-		const {
-			state: {
-				user
-			}
-		} = ctx;
-
-		await setCtx(ctx, { user: user });
 	}
-
-	
 };

@@ -20,9 +20,18 @@ export default {
 			}
 		} = ctx;
 
-		infoLog.info('Request to - /signup/lc/verify: ', ctx);
+		infoLog.info('Request to - /menu/auth/signup/lc/verify: ', ctx);
+		
+		const lc = await UserService.findOne({ code: verify });
+		if(!lc){
+			ctx.throw(403, 'Error on verifying');
+		}
 
-		console.log("verify: ", verify);
+		await UserService.updateUser({ verified: true }, lc);
+
+		ctx.body = { message: 'verified' };
+
+		infoLog.info('Response to - /menu/auth/signup/lc/verify: ', ctx.body);
 	},
 
 	async getLC(ctx){
@@ -43,6 +52,9 @@ export default {
 							doesn't belong to user with hash "${hash}"`);
 		}
 
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}
 		const result = await UserService.findOne({ hash: lc.hash });
 
 		await setCtx(ctx, { data: result });
@@ -73,6 +85,9 @@ export default {
 			 	doesn't belong to user with hash "${hash}"`);
 		}
 
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}
 		await UserService.updateOne(id, body);
 		const updatedLC = await UserService.findOne({ _id: lc._id });
 
@@ -101,6 +116,10 @@ export default {
 			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}" 
 							doesn't belong to user with hash "${hash}"`);
 		}
+
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}		
 		const newData = pick(body, User.createFields);
 
 		if(newData.role !== 'center'){
@@ -132,6 +151,9 @@ export default {
 							 doesn't belong to user with hash "${hash}"`);
 		}
 
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}
 
 		const result = await UserService.push(lc._id, body);
 
@@ -332,6 +354,9 @@ export default {
 							doesn't belong to user with hash "${hash}"`);
 		}
 		
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}
 		const updatedLC = await UserService.pull(lc._id, id);
 
 		ctx.body = { data: updatedLC };
@@ -358,6 +383,9 @@ export default {
 							does not belong to user with hash ${hash}`);
 		}
 
+		if(lc.verified != 1){
+			ctx.throw(400, `Please verify your unique code`);
+		}
 		await lc.remove();
 
 		await setCtx(ctx, { hash: lc.hash });

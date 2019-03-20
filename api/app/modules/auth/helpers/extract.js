@@ -9,8 +9,8 @@ export default async (ctx) => {
     const body = ctx.request.body;
     const role = body.role;
     let userData;
-
-		if(role !== 'student'){
+    
+		if(role === 'center' || role === 'tutor'){
 			userData = { 
                 ...pick(body, User.createFields),
                 img: await setParamsForImage(ctx),

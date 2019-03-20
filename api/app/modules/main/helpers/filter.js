@@ -3,8 +3,8 @@ import { User } from '../../users';
 import setCtx from '../../../helpers/setCtx'; 
 
 export default async (ctx, user, result, body = null) => {
-	const title = body.params.title;
-	const category = body.params.category;
+	const title = body.title;
+	const category = body.category;
 	const data = async (role) => {
 		let data;
 		if(role){
@@ -25,7 +25,7 @@ export default async (ctx, user, result, body = null) => {
 	}else if(body.data === 'both'){
 		const both = await User.find(await data());
 		return await setCtx(ctx, [{ user }, { both }, { recommended }, { resultByCoords: result } ]);
-	}else if(!body){
+	}else{
 		ctx.throw(404, `Error data`);
 	}
 }

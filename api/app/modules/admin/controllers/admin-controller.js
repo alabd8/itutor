@@ -1,38 +1,120 @@
 import pick from 'lodash/pick';
-import { AdminService } from '../services';
+
+import { infoLog } from '../../../utils/logs/logger';
 import setCtx from '../../../helpers/setCtx';
+import searchUser from '../helpers/searchUser';
+import generateFields from '../helpers/generateFields';
+
+import { User } from '../../users';
+import { UserService } from '../../users/services';
 
 export default {
-	async menu(ctx){
-		const {
+	async getAdministrators(ctx){
+		const { 
+			request: {
+				body: { data }
+			},
 			state: {
-				user
+				user: {
+					role,
+					hash
+				}
 			}
 		} = ctx;
+		infoLog.info('Request to - /admin/administrators: ', ctx);
 
-		await setCtx(ctx, { user: user });
+		if(!hash || role != 'admin'){
+			ctx.throw(403, `Forbidden`);
+		}
+		if(data === 'getAdmins' || role === 'admin'){
+			const administrators = await UserService.find({ role: 'admin' });
+			await setCtx(ctx, { administrators });
+		}
+
+		infoLog.info('Response to - /admin/administrators: ', ctx.body);
 	},
 
-	async statistics(ctx){
+	async createModerator(ctx){
 		const {
 			state: {
-				user
+				user: { role, hash }
+			},
+			request: { 
+				body
 			}
 		} = ctx;
+		infoLog.info('Request to - /admin/create/moderator: ', ctx);
 
-		const info = await getStatistics(ctx);
+		if(!hash || role !== 'admin'){
+			ctx.throw(403, `Forbidden`);
+		}
 
-	},	
+		let newModerator = await generateFields(body),
+		   moderator;
 
-	async moderators(ctx){
+		if(newModerator){
+			try{
+				moderator = await UserService.createUser(newModerator);
+			}catch(e){
+				ctx.throw(400, { message: e });
+			}		
+		}
+
+		ctx.status = 201;
+		ctx.body = { moderator };
+
+		infoLog.info('Response to - /admin/create/moderator: ', ctx.body);
+	},
+	
+	async defineUser(ctx){
+		const { 
+			request: {
+				body: { data }
+			},
+			state: {
+				user: { role, hash }
+			}
+		} = ctx;
+		infoLog.info('Request to - /admin/getusers: ', ctx);
+
+		if(!hash || role != 'admin'){
+			ctx.throw(403, `Forbidden`);
+		}
+
+		const users = await searchUser(data, role);
+		await setCtx(ctx, { users });
+
+		infoLog.info('Response to - /admin/getusers: ', ctx.body);
+	},
+
+	async genKeyForCenter(ctx){
 		const {
 			state: {
-				user
-			}	
+				user: { role, hash }
+			},
+			request: { 
+				body: { data }
+			}
 		} = ctx;
-		
-		const status = await AdminService.findByStatus();
+		infoLog.info('Request to - /admin/center: ', ctx);
 
-		await setCtx(ctx, status);
+		if(!hash || role !== 'admin'){
+			ctx.throw(403, `Forbidden`);
+		}
+		let random;
+		if(data){
+			try{
+				let lc = await UserService.findOne({ email: data });
+				random = Math.ceil(Math.random() * 999999999);
+				await UserService.updateUser({ code: random }, lc);
+			}catch(e){
+				ctx.throw(400, { message: e });
+			}
+			
+		}
+
+		ctx.body = { message: random };
+
+		infoLog.info('Response to - /admin/center: ', ctx.body);
 	}
 }

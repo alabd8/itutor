@@ -29,6 +29,7 @@ export default {
         } = ctx;
 
         await TokenService.removeTokens({ email });
+        await UserService.updateUser({ status: 0 }, ctx.state.user);
 
         ctx.body = { success: true };
     },

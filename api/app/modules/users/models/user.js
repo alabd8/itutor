@@ -44,7 +44,7 @@ const UserSchema = new mongoose.Schema({
 	role: {
 		type: String,
 		required: 'Role is required',
-		enum: ['student', 'tutor', 'center'],
+		enum: ['student', 'tutor', 'center', 'moderator', 'admin'],
 		trim: true,
 		lowercase: true
 	},
@@ -336,12 +336,38 @@ const UserSchema = new mongoose.Schema({
 			default: null
 		}
 	},
+	state: {
+		type: Boolean,
+		default: false
+	},
+	code: {
+		type: String,
+		default: null
+	},
+	verified: {
+		type: Boolean,
+		default: false
+	},
+	requests: [{
+		email: {
+			type: String,
+			default: null
+		},
+		title: {
+			type: String,
+			default: null
+		},
+		stars: {
+			type: String,
+			default: null
+		}
+	}]
 }, { timestamps: true });
  
 UserSchema.statics.createFields = [
 						'name', 'firstName', 'lastName','email', 'password', 'role', 
-						'saves', 'active', 'phone', 'img', 'page', 'gallery',
-						'trophies', 'recommended', 'teachers', 'params', 'uniqueID'
+						'saves', 'active', 'phone', 'img', 'page', 'gallery', 'state',
+						'trophies', 'recommended', 'teachers', 'params', 'uniqueID', 'code'
 					];
 
 UserSchema.statics.createFieldsForStudent = [
@@ -362,29 +388,38 @@ UserSchema.pre('save', function(next){
 		this.password = bcrypt.hashSync(this.password, salt);
 	}
 	
-	if(!this.hash){ this.hash = uuid();}
+	if(!this.hash) this.hash = uuid();
 	
-	if(!this.page.link){ this.page.link = this._id;}
+	if(this.role !== 'moderator') this.requests = null;
 
-	if(!this.page.linkFull){ this.page.linkFull = `${this.role}s/${this._id}` }
-
-	if(!this.page.course.link){ 
-		this.page.course.link = `${this.role}s/${this._id}/courses/${this.page.course._id}` 
-	}
-
-	if(!this.gallery.link){	this.gallery.link = `${this.role}s/${this._id}/gallery`;}
-
-	if(!this.url){ this.url = `users/${this.hash}`;}
-
-	if(!this.params.transaction){ this.params.transaction = this.uniqueID;}
+	if(this.role != 'center') this.teachers = null;
 	
-	if(!this.params.time_end){
-		const THIRTY_DAYS = (30 * 24 * 60 * 60 * 1000);
-		// const THIRTY_DAYS = 200000;
+	if(this.role === 'center' ||  this.role === 'tutor'){
+		if(!this.page.link) this.page.link = this._id;
 
-		this.params.time_end = Date.now() + THIRTY_DAYS;
+		if(!this.page.linkFull) this.page.linkFull = `${this.role}s/${this._id}`;
+
+		if(!this.page.course.link) 
+			this.page.course.link = `${this.role}s/${this._id}/courses/${this.page.course._id}` ;
+
+		if(!this.gallery.link) this.gallery.link = `${this.role}s/${this._id}/gallery`;
+
+		if(!this.url) this.url = `users/${this.hash}`;
+
+		if(!this.params.transaction) this.params.transaction = this.uniqueID;
+		
+		if(!this.params.time_end){
+			const THIRTY_DAYS = (30 * 24 * 60 * 60 * 1000);
+			// const THIRTY_DAYS = 200000;
+
+			this.params.time_end = Date.now() + THIRTY_DAYS;
+		}
+	}else{
+		this.page = null;
+		this.gallery = null;
+		this.params = null;
 	}
-
+	
 	next();
 });
 

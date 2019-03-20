@@ -31,7 +31,9 @@ export default {
 	async login(ctx){
 		const { email, password } = ctx.request.body;
 
-		const user = await User.findOne({ email });
+		const credentials = await UserService.findOne({ email });
+		const { _id } = await UserService.updateUser({ state: 1 }, credentials);
+		const user = await User.findOne({ _id });
 
 		infoLog.info('Request to - /menu/auth/signin: ', ctx);
 
@@ -46,7 +48,7 @@ export default {
 				message: 'Invalid password' 
 			});
 		}		
-
+		
 		ctx.body = await issueTokenPair(email, user._id);
 
 		infoLog.info('Response to - /menu/auth/signin: ', ctx.body);
