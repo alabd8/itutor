@@ -39,6 +39,7 @@
   "dependencies": {
     "@babel/node": "^7.2.2",
     "@koa/cors": "2",
+    "base-64": "^0.1.0",
     "bcrypt-nodejs": "^0.0.3",
     "bunyan": "^1.8.12",
     "config": "^1.30.0",
@@ -56,6 +57,7 @@
     "mongoose-unique-validator": "^2.0.1",
     "password-validator": "^4.1.1",
     "supertest-koa-agent": "^0.3.0",
+    "utf8": "^3.0.0",
     "uuid": "^3.3.2",
     "validator": "^10.7.0"
   }

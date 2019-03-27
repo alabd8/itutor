@@ -19,8 +19,7 @@ export default {
 			}
 		} = ctx;
 		
-		console.log('IP: ', ip);
-		
+		console.log('ctx.request.connection: ', ctx.request.connection);
 		infoLog.info('Request to - /: ', ctx);
 
 		if(ip === valid1 && ip === valid2){
