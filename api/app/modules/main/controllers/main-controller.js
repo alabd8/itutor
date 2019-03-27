@@ -19,9 +19,9 @@ export default {
 			}
 		} = ctx;
 		
-		console.log('ctx.request.connection: ', ctx.request.connection);
 		infoLog.info('Request to - /: ', ctx);
-
+		infoLog.info('Request Request: ', ctx.request);
+	
 		if(ip === valid1 && ip === valid2){
 			await validator(ctx, body);
 		}else{

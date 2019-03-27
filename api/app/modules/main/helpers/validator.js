@@ -1,9 +1,11 @@
 import setCtx from '../../../helpers/setCtx';
+import { UserService } from '../../users/service';
 
 export default async (ctx, body = null) => {
-    if(body.params && body.method === 'CheckPerformTransaction'){
-        await setCtx(ctx, -32504);
-    }else{
-        ctx.throw(404, 'Invalid data');
-    }
+    if(!body){
+	if(body.method == 'CheckPerformTransaction'){
+		try{
+			let user = await UserService.findOne({ uniqueID: body.params.account.itutor });
+			if(user.params.state
+    		}
 }
