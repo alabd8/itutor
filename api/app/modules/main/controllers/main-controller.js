@@ -7,7 +7,7 @@ import { infoLog, debLog } from '../../../utils/logs/logger';
 import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
 import validator from '../helpers/validator';
-import { valid1, valid2 } from '../constants';
+// import { valid1, valid2 } from '../constants';
 import { UserService } from '../../users/services';
 
 export default {
@@ -20,14 +20,10 @@ export default {
 		} = ctx;
 		
 		infoLog.info('Request to - /: ', ctx);
-		infoLog.info('Request Request: ', ctx.request);
-	
-		if(ip === valid1 && ip === valid2){
-			await validator(ctx, body);
-		}else{
-			ctx.status = 200;
-			ctx.body = tutor;
-		}
+
+		console.log("VALIDATOR 1");
+
+		await validator(ctx, body);
 
 		infoLog.info('Response to - /: ', ctx.body);
 
