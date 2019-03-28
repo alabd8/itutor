@@ -14,14 +14,11 @@ export default {
 	async main(ctx){
 		const {
 			request: {
-				body,
-				ip,
+				body
 			}
 		} = ctx;
-		
-		infoLog.info('Request to - /: ', ctx);
 
-		console.log("VALIDATOR 1");
+		infoLog.info('Request to - /: ', ctx);
 
 		await validator(ctx, body);
 
