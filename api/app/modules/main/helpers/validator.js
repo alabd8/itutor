@@ -34,7 +34,7 @@ export default async (ctx, body = null) => {
             }
         } catch (e) {
             ctx.status = 200;
-            ctx.body = { message: `Something went wrong. Please try later` };
+            ctx.body = { message: e.message };
         }
     }
 }
