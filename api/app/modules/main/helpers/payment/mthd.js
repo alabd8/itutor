@@ -16,22 +16,22 @@ export default {
         if (!user) {
             console.log("MEME 2");
 
-            return await c(ctx, { "jsonrpc": "2.0", "Error": -31050 });
+            return await c(ctx, { "result": { "allow": -31050 } });
         }
         if (!user.params.state) {
             console.log("MEME 3");
 
-            return await c(ctx, { "jsonrpc": "2.0", "Error": -31055 });
+            return await c(ctx, { "result": { "allow": -31055 } });
         }
         if (body.params.amount < SUM) {
             console.log("MEME 4");
 
-            return await c(ctx, { "jsonrpc": "2.0", "Error": -31001 });
+            return await c(ctx, { "result" : { "allow" : -31001 } });
         }
 
         console.log("MEME 5");
 
-        return await c(ctx, { "jsonrpc": "2.0", "allow": 1 });
+        return await c(ctx, { "result" : { "allow" : true } });
     },
 
     // async 
