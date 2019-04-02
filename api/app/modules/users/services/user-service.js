@@ -10,6 +10,7 @@ export default {
 	},
 	async updateUser(data, user){
 		user.set(data);
+
 		try {
 			return user.save();
 		} catch (e) {

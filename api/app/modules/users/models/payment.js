@@ -10,10 +10,7 @@ const PaymentSchema = new mongoose.Schema({
 	},
 	hash: {
 		type: String,
-	},
-	uniqueID: {
-		type: Number,
-		default: null
+		unique: 'Hash must be unique'
 	},
 	params: {
 		create_time: {
@@ -22,7 +19,7 @@ const PaymentSchema = new mongoose.Schema({
 		},
 		state: {
 			type: Number,
-			default: 0,
+			default: -1,
 		},
 		transaction: {
 			type: Number,
@@ -37,35 +34,53 @@ const PaymentSchema = new mongoose.Schema({
 			default: null
 		},
 		reason: {
-			type: String,	
+			type: Number,	
 			default: null
 		},
 		amount: {
 			type: Number,
 			default: 0
 		},
-		time_pay: {
-			type: Number,
-			default: null
-		},
-		payme_id: {
-			type: String,
-			default: null
-		},
-		time_end: {
-			type: Number,
-			default: null
-		}
+	},
+	time_out: {
+		type: Number,
+		default: null,
+	},
+	payment_time: {
+		type: Number,
+		default: null
+	},
+	payment_id: {
+		type: String,
+		default: null
+	},
+	time_end: {
+		type: Number,
+		default: null
+	},
+	id: {
+		type: String,
+		default: null
 	},
 }, { 
     timestamps: true
 });
- 
-PaymentSchema.statics.createFields = [ 'uniqueID', 'params' ];
 
 PaymentSchema.pre('save', function(next){
-	if(!this.hash){
-		this.hash = uuid();
+	if(!this.hash)	 this.hash = uuid();	
+	
+	if(!this.time_out){
+		this.time_out = Date.now() + 12*1000*60*60;
+	}
+
+	if(!this.time_end){
+		const THIRTY_DAYS = (30 * 24 * 60 * 60 * 1000);
+			// const THIRTY_DAYS = 200000;
+
+		this.time_end = Date.now() + THIRTY_DAYS;
+	}
+	if(!this.params.transaction){
+		this.params.transaction = Math.ceil(Math.random() * 9999);
 	}
 
 	next();

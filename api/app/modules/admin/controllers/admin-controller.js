@@ -1,11 +1,8 @@
-import pick from 'lodash/pick';
-
 import { infoLog } from '../../../utils/logs/logger';
 import setCtx from '../../../helpers/setCtx';
 import searchUser from '../helpers/searchUser';
 import generateFields from '../helpers/generateFields';
 
-import { User } from '../../users';
 import { UserService } from '../../users/services';
 
 export default {

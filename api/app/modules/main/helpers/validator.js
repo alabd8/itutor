@@ -1,10 +1,7 @@
 import payment from './payment/mthd';
 
 export default async (ctx, body = null) => {
-    console.log("VALIDATOR 2");
-
     if (!body) {
-        console.log("VALIDATOR 3");
         ctx.status = 408;
         ctx.body = { message: `Body does not exist` };
     } else {

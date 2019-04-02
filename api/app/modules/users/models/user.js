@@ -294,47 +294,13 @@ const UserSchema = new mongoose.Schema({
 	uniqueID: {
 		type: Number
 	},
-	params: {
-		create_time: {
-			type: Number,
-			default: null
-		},
-		state: {
-			type: Number,
-			default: 0,
-		},
-		transaction: {
-			type: Number,
-			default: 0
-		},
-		perform_time: {
-			type: Number,
-			default: null
-		},
-		cancel_time: {
-			type: Number,
-			default: null
-		},
-		reason: {
-			type: String,	
-			default: null
-		},
-		amount: {
-			type: Number,
-			default: 0
-		},
-		time_pay: {
-			type: Number,
-			default: null
-		},
-		payme_id: {
-			type: String,
-			default: null
-		},
-		time_end: {
-			type: Number,
-			default: null
-		}
+	time_end: {
+		type: Number,
+		default: null
+	},
+	pay_state: {
+		type: Number,
+		default: null
 	},
 	state: {
 		type: Boolean,
@@ -406,13 +372,8 @@ UserSchema.pre('save', function(next){
 
 		if(!this.url) this.url = `users/${this.hash}`;
 
-		if(!this.params.transaction) this.params.transaction = this.uniqueID;
-		
-		if(!this.params.time_end){
-			const THIRTY_DAYS = (30 * 24 * 60 * 60 * 1000);
-			// const THIRTY_DAYS = 200000;
-
-			this.params.time_end = Date.now() + THIRTY_DAYS;
+		if(!this.pay_state){
+			this.pay_state = -1;
 		}
 	}else{
 		this.page = null;

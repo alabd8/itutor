@@ -8,7 +8,7 @@ import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
 import validator from '../helpers/validator';
 // import { valid1, valid2 } from '../constants';
-import { UserService } from '../../users/services';
+import { UserService, PaymentService } from '../../users/services';
 
 export default {
 	async main(ctx){
@@ -99,6 +99,43 @@ export default {
 		ctx.body = { user }
 		infoLog.info('Response to - /menu: ', ctx.body);
 
+	},
+
+	async payment(ctx){
+		const {
+			state: { 
+				user: { hash },
+				person,
+			},
+			request: {
+				body: {
+					data,
+					uniqueID, 
+				}
+			}
+		} = ctx;
+
+		if(hash != person.hash){
+			ctx.throw(403, `Forbidden. User hash with ${hash} 
+					  does not belong to user with hash ${person.hash}`);
+		}	
+		try{
+			if(person.uniqueID != uniqueID || !data.pay_state || !uniqueID){
+				ctx.throw(400, 'Invalid credentials');
+			}
+		}catch(e){
+			ctx.throw(400, 'Error in credentials');
+		}
+		try{
+			const user = await UserService.updateUser(data, person);
+			await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
+												 params: { state: user.pay_state } });
+		}catch(e){
+			ctx.throw(400, 'Can not create payment');
+		}
+
+		ctx.status = 200;
+		ctx.body = { message: 'success' };
 	},
 
 	async check(ctx){

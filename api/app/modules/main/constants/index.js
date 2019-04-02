@@ -5,3 +5,4 @@ export const valid2 = '195.158.31.10';
 export const login = 'Paycom';
 export const pw = 'EX@jfzUrbm7BQWA3Bh9i??AGt8wqfixtHaQA';
 export const SUM = 50000;
+export const timestamp = Date.now();

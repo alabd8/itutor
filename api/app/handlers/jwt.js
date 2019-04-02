@@ -12,8 +12,7 @@ export default () => async (ctx, next) => {
 	if(authorization){
 		try{
 			const encoded = authorization.split(' ');
-
-			if(encoded[0]){
+			if(encoded[0] && encoded[1]){
 				const bytes = base64.decode(encoded[1]);
 				const text = utf8.decode(bytes);
 
@@ -25,8 +24,7 @@ export default () => async (ctx, next) => {
 			}
 			const { email } = await jwtService.verify(authorization);
 
-			const user = await User.findOne({ email });
-	
+			const user = await User.findOne({ email });	
 			if(user){
 				ctx.state.user = user;
 			}

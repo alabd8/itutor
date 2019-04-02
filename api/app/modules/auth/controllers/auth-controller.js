@@ -32,8 +32,14 @@ export default {
 		const { email, password } = ctx.request.body;
 
 		const credentials = await UserService.findOne({ email });
+		if(!credentials){
+			ctx.throw(400, { message: `User not found` });
+		}
+		
 		const { _id } = await UserService.updateUser({ state: 1 }, credentials);
 		const user = await User.findOne({ _id });
+
+		
 
 		infoLog.info('Request to - /menu/auth/signin: ', ctx);
 

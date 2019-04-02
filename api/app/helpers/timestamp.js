@@ -8,7 +8,7 @@ import { Payment } from '../modules/users';
 export default async (user, dbModel) => {
     const date = Date.now();
     
-    if(user.params.time_end >= date){
+    if(user.time_end >= date){
         let payment = await PaymentService.getPaymentWithPublicFields({ userHash: user.hash });
         
         console.log("PAYMENT------ 1: ", payment);
