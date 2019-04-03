@@ -69,13 +69,18 @@ export default {
         if (!transaction.payment_id)
             transaction = await PaymentService.updatePayment({ payment_id: body.params.id },
                 transaction);
-            
-        if (transaction.payment_id != body.params.id) 
-                return c(ctx, { "result": { "allow": -31050 } });
+        
+        console.log("PAYMENT_ID: ", transaction.payment_id != body.params.id);
+        if (transaction.payment_id != body.params.id) {
+            console.log("HELLO world 0");
 
+                return c(ctx, { "result": { "allow": -31050 } });
+        }
         if (transaction) {
-            if (transaction.params.state != 1) 
+            if (transaction.params.state != 1) {
+                console.log("HELLO world 1");
                 return c(ctx, { "result": { "allow": -31008 } });
+            }  
 
             const bool = timestamp() <= transaction.time_out;
             if (!bool) {
@@ -83,14 +88,19 @@ export default {
                     state: -1, reason: 4,
                     payment_id: body.params.id
                 }, transaction);
+                console.log("HELLO world 2");
+                
                 return c(ctx, { "result": { "allow": -31008 } })
             }
             
             return create_transaction(ctx, transaction);
         } else {
             let bool = await checkPerformTransaction(ctx, body);
-            if (!bool) return c(ctx, { "result": { "allow": -31050 } });
+            if (!bool) {
+                console.log("HELLO world 3");
 
+                return c(ctx, { "result": { "allow": -31050 } });
+            }
             return create_transaction(ctx, transaction);
         }
     },
