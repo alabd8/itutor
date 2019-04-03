@@ -32,41 +32,32 @@ export default {
     async checkPerformTransaction(ctx, body = null) {
         let payment = await PaymentService.findOne({ id: body.params.account.itutor });
 
-        if (!payment) {
-            return c(ctx, { "result": { "allow": -31050 } });
-        }
-        if (!payment.params.state) {
-            return c(ctx, { "result": { "allow": -31055 } });
-        }
-        if (body.params.amount < SUM) {
-            return c(ctx, { "result": { "allow": -31001 } });
-        }
+        if (!payment) c(ctx, { "result": { "allow": -31050 } });
+
+        if (!payment.params.state) c(ctx, { "result": { "allow": -31055 } });
+
+        if (body.params.amount < SUM) c(ctx, { "result": { "allow": -31001 } });
 
         return c(ctx, { "result": { "allow": true } });
     },
 
     async createTransaction(ctx, body = null) {
         const itutor = body.params.account.itutor;
-        if (!itutor) {
-            return c(ctx, { "result": { "allow": -31050 } });
-        }
+        if (!itutor) c(ctx, { "result": { "allow": -31050 } });
+
         let user = await UserService.findOne({ uniqueID: itutor });
-        if (!user) {
-            return c(ctx, { "result": { "allow": -31050 } });
-        }
+        if (!user) c(ctx, { "result": { "allow": -31050 } });
+
         let transaction = await PaymentService
             .findOne({ userHash: user.hash, id: itutor });
-        if (!transaction.payment_id) {
+
+        if (!transaction.payment_id)
             transaction = await PaymentService.updatePayment({ payment_id: body.params.id },
                 transaction);
-        }
-        if (transaction.payment_id != body.params.id) {
-            return c(ctx, { "result": { "allow": -31008 } });
-        }
+        if (transaction.payment_id != body.params.id) c(ctx, { "result": { "allow": -31008 } });
+
         if (transaction) {
-            if (transaction.params.state != 1) {
-                return c(ctx, { "result": { "allow": -31008 } });
-            }
+            if (transaction.params.state != 1) c(ctx, { "result": { "allow": -31008 } });
 
             const bool = timestamp() <= transaction.time_out;
             if (!bool) {
@@ -76,12 +67,11 @@ export default {
                 }, transaction);
                 return c(ctx, { "result": { "allow": -31008 } })
             }
+    
             return create_transaction(ctx, transaction);
         } else {
             let bool = await checkPerformTransaction(ctx, body);
-            if (!bool) {
-                return c(ctx, { "result": { "allow": -31050 } });
-            }
+            if (!bool) c(ctx, { "result": { "allow": -31050 } });
 
             return create_transaction(ctx, transaction);
         }

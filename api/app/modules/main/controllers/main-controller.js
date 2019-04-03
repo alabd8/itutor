@@ -95,8 +95,8 @@ export default {
 
 		infoLog.info('Request to - /menu: ', ctx);
 		
-		// await menu(ctx, user);
-		ctx.body = { user }
+		ctx.body = { user };
+
 		infoLog.info('Response to - /menu: ', ctx.body);
 
 	},
@@ -114,19 +114,25 @@ export default {
 			}
 		} = ctx;
 
-		if(hash != person.hash){
-			ctx.throw(403, `Forbidden. User hash with ${hash} 
-					  does not belong to user with hash ${person.hash}`);
-		}	
-		if(!data.pay_state){
-			ctx.throw(400, 'Invalid credentials');
-		}
+		if(hash != person.hash)	ctx.throw(403, `Forbidden. User hash with ${hash} 
+								  does not belong to user with hash ${person.hash}`);
+								  	
+		if(!data.pay_state) ctx.throw(400, 'Invalid credentials');
+
 		try{
 			const user = await UserService.updateUser(data, person);
+			const payment = await PaymentService.findOne({ userHash: user.hash, 
+														   id: user.uniqueID });
+			if(payment)
+				if(payment.params.state) ctx.throw(400, `Payment already exist`);
+	
 			await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
-												 params: { state: user.pay_state } });
-		}catch(e){
-			ctx.throw(400, 'Can not create payment');
+							    				 params: { state: user.pay_state } });
+
+		}catch({ status, message, name }){
+			name === 'BadRequestError' ? 
+			ctx.throw(400, `${name}. ${message}`) :
+			ctx.throw(400, `Can not create payment`);
 		}
 
 		ctx.status = 200;

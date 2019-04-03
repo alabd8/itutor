@@ -9,7 +9,8 @@ export default (mongo_uri) => {
 	}
 
 	return mongoose
-		.connect(mongo_uri, { useNewUrlParser: true })
+		.connect(mongo_uri, { useNewUrlParser: true, 
+							  useCreateIndex: true })
 		.then((mongodb) => {
 			console.log('Mongo connected');
 			debLog.debug(`Mongo connected`, mongodb);

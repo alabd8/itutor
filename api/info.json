@@ -398,3 +398,26 @@
 {"name":"itutor-app-info","hostname":"ceo","pid":9082,"level":30,"msg":"Response to - /:  undefined","time":"2019-04-03T17:08:29.431Z","v":0}
 {"name":"itutor-app-info","hostname":"ceo","pid":9172,"level":30,"msg":"Request to - /:  { request:\n   { method: 'POST',\n     url: '/',\n     header:\n      { 'content-type': 'application/json',\n        authorization:\n         'Basic UGF5Y29tOkVYQGpmelVyYm03QlFXQTNCaDlpPz9BR3Q4d3FmaXh0SGFRQQ==',\n        'cache-control': 'no-cache',\n        'postman-token': '56db1486-1f04-4e36-82e7-2cc26cba590a',\n        'user-agent': 'PostmanRuntime/7.6.0',\n        accept: '*/*',\n        host: 'localhost:8080',\n        'accept-encoding': 'gzip, deflate',\n        'content-length': '256',\n        connection: 'keep-alive' } },\n  response:\n   { status: 404,\n     message: 'Not Found',\n     header: [Object: null prototype] { vary: 'Origin' } },\n  app: { subdomainOffset: 2, proxy: false, env: 'development' },\n  originalUrl: '/',\n  req: '<original node req>',\n  res: '<original node res>',\n  socket: '<original node socket>' }","time":"2019-04-03T17:09:31.290Z","v":0}
 {"name":"itutor-app-info","hostname":"ceo","pid":9172,"level":30,"msg":"Response to - /:  { result:\n   { create_time: 1554311372302, state: 1, transaction: '5539' } }","time":"2019-04-03T17:09:32.920Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10282,"level":30,"msg":"Request to - /:  { request:\n   { method: 'POST',\n     url: '/',\n     header:\n      { 'content-type': 'application/json',\n        authorization:\n         'Basic UGF5Y29tOkVYQGpmelVyYm03QlFXQTNCaDlpPz9BR3Q4d3FmaXh0SGFRQQ==',\n        'cache-control': 'no-cache',\n        'postman-token': '25bd24f5-7a3a-4ea9-b560-4ecadc75f90c',\n        'user-agent': 'PostmanRuntime/7.6.0',\n        accept: '*/*',\n        host: 'localhost:8080',\n        'accept-encoding': 'gzip, deflate',\n        'content-length': '256',\n        connection: 'keep-alive' } },\n  response:\n   { status: 404,\n     message: 'Not Found',\n     header: [Object: null prototype] { vary: 'Origin' } },\n  app: { subdomainOffset: 2, proxy: false, env: 'development' },\n  originalUrl: '/',\n  req: '<original node req>',\n  res: '<original node res>',\n  socket: '<original node socket>' }","time":"2019-04-03T17:42:49.194Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10282,"level":30,"msg":"Response to - /:  { result:\n   { create_time: 1554313371110, state: 1, transaction: '5539' } }","time":"2019-04-03T17:42:51.729Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10282,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:43:09.566Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10386,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:44:43.049Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10561,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:48:09.823Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10652,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:49:21.612Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10757,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:49:54.931Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10852,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:50:39.102Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":10932,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:51:21.366Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11012,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:52:01.738Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11085,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:52:37.035Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11175,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:53:17.488Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11377,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:56:01.463Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11476,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:57:00.768Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11629,"level":30,"msg":"succesfully saved","time":"2019-04-03T17:59:41.009Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":11795,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:03:21.853Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":12396,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:11:44.133Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":12456,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:12:35.077Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":12542,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:13:24.294Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":12623,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:14:08.806Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":12716,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:14:50.831Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":13033,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:19:36.707Z","v":0}
+{"name":"itutor-app-info","hostname":"ceo","pid":13033,"level":30,"msg":"succesfully saved","time":"2019-04-03T18:19:50.122Z","v":0}
