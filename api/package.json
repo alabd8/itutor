@@ -53,7 +53,7 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "lodash": "^4.17.10",
-    "mongoose": "^5.2.4",
+    "mongoose": "^5.4.21",
     "mongoose-unique-validator": "^2.0.1",
     "password-validator": "^4.1.1",
     "supertest-koa-agent": "^0.3.0",

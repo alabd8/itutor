@@ -110,7 +110,6 @@ export default {
 			request: {
 				body: {
 					data,
-					uniqueID, 
 				}
 			}
 		} = ctx;
@@ -119,12 +118,8 @@ export default {
 			ctx.throw(403, `Forbidden. User hash with ${hash} 
 					  does not belong to user with hash ${person.hash}`);
 		}	
-		try{
-			if(person.uniqueID != uniqueID || !data.pay_state || !uniqueID){
-				ctx.throw(400, 'Invalid credentials');
-			}
-		}catch(e){
-			ctx.throw(400, 'Error in credentials');
+		if(!data.pay_state){
+			ctx.throw(400, 'Invalid credentials');
 		}
 		try{
 			const user = await UserService.updateUser(data, person);

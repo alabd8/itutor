@@ -2,9 +2,9 @@ import base64 from 'base-64';
 import utf8 from 'utf8';
 
 import jwtService from '../services/jwt-service';
-import { login, pw } from '../modules/main/constants';
 
 import { User } from '../modules/users';
+import { login, pw } from '../modules/main/constants';
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
@@ -29,7 +29,7 @@ export default () => async (ctx, next) => {
 				ctx.state.user = user;
 			}
 			
-			if(user == null){
+			if(!user){
 				ctx.throw(403, { message: 'Forbidden. Unauthorized' });
 			}
 		}catch(ex){

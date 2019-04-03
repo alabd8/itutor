@@ -8,11 +8,11 @@ function c(ctx, obj) {
     return ctx;
 };
 
-function create_transaction(ctx, transaction) {
+async function create_transaction(ctx, transaction) {
     try {
-        const payment = PaymentService
+        const payment = await PaymentService
             .updatePayment({
-                state: 1, create_time: timestamp,
+                params: { state: 1, create_time: timestamp() },
                 payment_id: ctx.request.body.params.id
             }, transaction);
         const pay = payment.params;
@@ -20,11 +20,11 @@ function create_transaction(ctx, transaction) {
             "result": {
                 "create_time": pay.create_time,
                 "state": pay.state,
-                "transaction": pay.transaction
+                "transaction": `${pay.transaction}`
             }
         });
     } catch (e) {
-        ctx.throw(400, 'Sorry. Something went wrong. Try later');
+        ctx.throw(400, `Sorry. Something went wrong. Try later. ${e}`);
     }
 };
 
@@ -47,10 +47,10 @@ export default {
 
     async createTransaction(ctx, body = null) {
         const itutor = body.params.account.itutor;
-        let user = await UserService.findOne({ uniqueID: itutor });
-        if (!itutor || user.uniqueID != itutor) {
+        if (!itutor) {
             return c(ctx, { "result": { "allow": -31050 } });
         }
+        let user = await UserService.findOne({ uniqueID: itutor });
         if (!user) {
             return c(ctx, { "result": { "allow": -31050 } });
         }
@@ -63,14 +63,12 @@ export default {
         if (transaction.payment_id != body.params.id) {
             return c(ctx, { "result": { "allow": -31008 } });
         }
-        console.log("11111111111111");
         if (transaction) {
             if (transaction.params.state != 1) {
                 return c(ctx, { "result": { "allow": -31008 } });
             }
-            console.log("2222222222222222");
 
-            const bool = timestamp <= transaction.time_out;
+            const bool = timestamp() <= transaction.time_out;
             if (!bool) {
                 await PaymentService.updatePayment({
                     state: -1, reason: 4,
@@ -78,19 +76,14 @@ export default {
                 }, transaction);
                 return c(ctx, { "result": { "allow": -31008 } })
             }
-        console.log("333333333333333333");
-
-            create_transaction(ctx, transaction);
+            return create_transaction(ctx, transaction);
         } else {
-        console.log("444444444444444");
-
             let bool = await checkPerformTransaction(ctx, body);
             if (!bool) {
                 return c(ctx, { "result": { "allow": -31050 } });
             }
-        console.log("55555555555555555");
 
-            create_transaction(ctx, transaction);
+            return create_transaction(ctx, transaction);
         }
     },
 }
