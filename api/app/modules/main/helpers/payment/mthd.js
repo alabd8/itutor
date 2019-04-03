@@ -71,7 +71,7 @@ export default {
                 transaction);
             
         if (transaction.payment_id != body.params.id) 
-                return c(ctx, { "result": { "allow": -31008 } });
+                return c(ctx, { "result": { "allow": -31050 } });
 
         if (transaction) {
             if (transaction.params.state != 1) 
