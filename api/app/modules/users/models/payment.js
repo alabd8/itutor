@@ -15,11 +15,11 @@ const PaymentSchema = new mongoose.Schema({
 	params: {
 		create_time: {
 			type: Number,
-			default: null
+			default: 0
 		},
 		state: {
 			type: Number,
-			default: -1,
+			default: 0,
 		},
 		transaction: {
 			type: Number,
@@ -27,20 +27,20 @@ const PaymentSchema = new mongoose.Schema({
 		},
 		perform_time: {
 			type: Number,
-			default: null
+			default: 0
 		},
 		cancel_time: {
 			type: Number,
-			default: null
+			default: 0
 		},
 		reason: {
 			type: Number,	
 			default: null
 		},
-		amount: {
-			type: Number,
-			default: 0
-		},
+	},
+	amount: {
+		type: Number,
+		default: 0
 	},
 	time_out: {
 		type: Number,

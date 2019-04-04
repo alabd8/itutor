@@ -96,4 +96,13 @@ export default {
             return create_transaction(ctx, transaction);
         }
     },
+
+    async CheckTransaction(ctx, body = null){
+        const payment = await PaymentService.findOne({ payment_id: body.params.id });
+        if(!payment) return c(ctx, { "result": { "allow": -31003 } });
+        const { create_time, perform_time, cancel_time, transaction, state, reason } = payment;
+        return c(ctx, { 
+            "result": { create_time, perform_time, cancel_time, transaction, state, reason } });
+    },
+    
 }
