@@ -10,7 +10,7 @@ export default {
 	},
 	async updatePayment(data, payment) {
 		payment.set(data);
-	
+		
 		try {
 			return payment.save();
 		} catch (e) {

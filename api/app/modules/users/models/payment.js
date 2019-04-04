@@ -38,6 +38,10 @@ const PaymentSchema = new mongoose.Schema({
 			default: null
 		},
 	},
+	mock_amount: {
+		type: Number,
+		default: 0
+	}, 
 	amount: {
 		type: Number,
 		default: 0

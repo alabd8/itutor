@@ -63,37 +63,65 @@ export default {
         let user = await UserService.findOne({ uniqueID: itutor });
         if (!user) return c(ctx, { "result": { "allow": -31050 } });
 
-        let transaction = await PaymentService
+        let payment = await PaymentService
             .findOne({ userHash: user.hash, id: itutor });
 
-        if (!transaction.payment_id)
-            transaction = await PaymentService.updatePayment({ payment_id: body.params.id },
-                transaction);   
+        if (!payment.payment_id)
+            payment = await PaymentService.updatePayment({ payment_id: body.params.id },
+                payment);   
         
-        // if (transaction.payment_id != body.params.id) // одноразовый счет
+        // if (payment.payment_id != body.params.id) // одноразовый счет
                 // return c(ctx, { "result": { "allow": -31050 } });
         
-        if (transaction) {
-            if (transaction.params.state != 1)
+        if (payment) {
+            if (payment.params.state != 1)
                 return c(ctx, { "result": { "allow": -31008 } });  
 
-            const bool = timestamp() <= transaction.time_out;
+            const bool = timestamp() <= payment.time_out;
             if (!bool) {
                 await PaymentService.updatePayment({
                     state: -1, reason: 4,
-                    payment_id: body.params.id
-                }, transaction);
+                    payment_id: body.params.id,
+                    mock_amount: body.params.amount
+                }, payment);
                 
                 return c(ctx, { "result": { "allow": -31008 } })
             }
             
-            return create_transaction(ctx, transaction);
+            return create_transaction(ctx, payment);
         } else {
             let bool = await checkPerformTransaction(ctx, body);
             if (!bool)
                 return c(ctx, { "result": { "allow": -31050 } });
 
-            return create_transaction(ctx, transaction);
+            return create_transaction(ctx, payment);
+        }
+    },
+
+    async performTransaction(ctx, body = null){
+        let payment = await PaymentService.findOne({ payment_id: body.params.id });
+
+        if(!payment) return c(ctx, { "result": { "allow": -31003 } });
+
+        let { state, perform_time, transaction } = payment.params;
+        if(state != 1){
+            if(state != 2)  return c(ctx, { "result": { "allow": -31008 } });
+            return c(ctx, { 
+                "result": { state, perform_time, transaction } });
+        }else if(state = 1){
+            const bool = timestamp() <= payment.time_out;
+            if (!bool) {
+                let a = await PaymentService.updatePayment({
+                    params: { state: -1, reason: 4 } }, payment);
+                return c(ctx, { "result": { "allow": -31008 } })
+            }
+            payment = await PaymentService.updatePayment({
+                amount: payment.mock_amount,
+                params: { state: 2, perform_time: timestamp() }
+            }, payment);
+            
+            let { state, perform_time, transaction } = payment.params;
+            return c(ctx, { "result": { state, perform_time, transaction } });
         }
     },
 
@@ -106,5 +134,4 @@ export default {
         return c(ctx, { 
             "result": { create_time, perform_time, cancel_time, transaction, state, reason } });
     },
-
 }
