@@ -1,5 +1,6 @@
 import { SUM, timestamp } from '../../constants';
 import { UserService, PaymentService } from '../../../users/services';
+import { brotliDecompressSync } from 'zlib';
 
 function c(ctx, obj) {
     ctx.status = 200;
@@ -52,12 +53,14 @@ export default {
 
         if (payment.params.state != 1) return c(ctx, { "result": { "allow": -31055 } });
 
-        if (body.params.amount < SUM) return c(ctx, { "result": { "allow": -31001 } });
+        if (body.params.amount <= SUM) return c(ctx, { "result": { "allow": -31001 } });
 
         return c(ctx, { "result": { "allow": true } });
     },
 
     async createTransaction(ctx, body = null) {
+        if (body.params.amount <= SUM) return c(ctx, { "result": { "allow": -31001 } });
+        
         const itutor = body.params.account.itutor;
         if (!itutor) return c(ctx, { "result": { "allow": -31050 } });
 

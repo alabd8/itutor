@@ -8,7 +8,7 @@ import { login, pw } from '../modules/main/constants';
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
-	
+	console.log(ctx.request.ip);
 	if(authorization){
 		try{
 			const encoded = authorization.split(' ');
@@ -20,6 +20,11 @@ export default () => async (ctx, next) => {
 
 				if(login === encoded2[0] && pw === encoded2[1]){
 					return await next();
+				}else if(encoded.legth > 2 || encoded2[0] != login || encoded2[1] != pw){
+					ctx.status = 200;
+					ctx.body = { "result": { "allow": -32504 } };
+					
+					return ctx;
 				}
 			}
 			const { email } = await jwtService.verify(authorization);
