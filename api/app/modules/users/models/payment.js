@@ -23,7 +23,7 @@ const PaymentSchema = new mongoose.Schema({
 		},
 		transaction: {
 			type: String,
-			default: 0
+			default: null
 		},
 		perform_time: {
 			type: Number,

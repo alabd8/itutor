@@ -10,11 +10,12 @@ function c(ctx, obj) {
 
 async function create_transaction(ctx, transaction) {
     try {
+        const body = ctx.body.request;
         if(transaction.params.create_time){
             const payment = await PaymentService
                 .updatePayment({
                     params: { state: 1, create_time: transaction.params.create_time },
-                    payment_id: ctx.request.body.params.id
+                    payment_id: body.params.id, mock_amount: body.params.amount
                 }, transaction);
             const pay = payment.params;
             return c(ctx, {
@@ -28,7 +29,7 @@ async function create_transaction(ctx, transaction) {
         const payment = await PaymentService
             .updatePayment({
                 params: { state: 1, create_time: timestamp() },
-                payment_id: ctx.request.body.params.id
+                payment_id: body.params.id, mock_amount: body.params.amount
             }, transaction);
         const pay = payment.params;
         return c(ctx, {
@@ -80,10 +81,10 @@ export default {
             const bool = timestamp() <= payment.time_out;
             if (!bool) {
                 await PaymentService.updatePayment({
-                    state: -1, reason: 4,
-                    payment_id: body.params.id,
-                    mock_amount: body.params.amount
-                }, payment);
+                    params: {
+                        state: -1, reason: 4,
+                    },
+                    payment_id: body.params.id }, payment);
                 
                 return c(ctx, { "result": { "allow": -31008 } })
             }
@@ -117,6 +118,9 @@ export default {
                     params: { state: -1, reason: 4 } }, payment);
                 return c(ctx, { "result": { "allow": -31008 } })
             }
+            let user = await UserService.findOne({ uniqueID: body.params.id });
+            let amount = user.amount + payment.mock_amount;
+            await UserService.updateUser({ amount }, user);
             payment = await PaymentService.updatePayment({
                 amount: payment.mock_amount,
                 params: { state: 2, perform_time: timestamp() }
@@ -124,6 +128,41 @@ export default {
             
             let { state, perform_time, transaction } = payment.params;
             return c(ctx, { "result": { state, perform_time, transaction } });
+        }
+    },
+
+    async cancelTransaction(ctx, body = null){
+        const payment = await PaymentService.findOne({ payment_id: body.params.id });
+        if(!payment) return c(ctx, { "result": { "allow": -31003 } });
+        
+        let { state, cancel_time, transaction } = payment.params;
+        if(state != 1){
+            if(state != 2)  return c(ctx, { "result": { state, cancel_time, transaction } });
+            
+            let bool = payment.amount >= SUM
+            if(!bool) return c(ctx, { "result": { "allow": -31008 } })
+            
+            let user = await UserService.findOne({ uniqueID: body.params.id }); 
+            if(payment.amount <= user.amount){
+                let amount = user.amount - payment.amount;
+                await UserService.updateUser({ amount }, user);
+                payment = await PaymentService
+                        .updatePayment({ 
+                            params: 
+                                { state: -2, cancel_time: timestamp(), 
+                                    reason: body.params.reason }, amount: 0 });
+                let { state, cancel_time, transaction } = payment.params;
+                return c(ctx, { "result": { state, cancel_time, transaction } });
+            }
+            return c(ctx, { "result": { "allow": -31007 } })
+        }else if(state = 1){
+            payment = await PaymentService
+                        .updatePayment({ 
+                            params: 
+                                { state: -1, cancel_time: timestamp(), 
+                                    reason: body.params.reason }, amount: 0 });
+                let { state, cancel_time, transaction } = payment.params;
+                return c(ctx, { "result": { state, cancel_time, transaction } });
         }
     },
 
