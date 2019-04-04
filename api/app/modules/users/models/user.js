@@ -300,7 +300,7 @@ const UserSchema = new mongoose.Schema({
 	},
 	pay_state: {
 		type: Number,
-		default: null
+		default: 0
 	},
 	state: {
 		type: Boolean,
@@ -372,9 +372,6 @@ UserSchema.pre('save', function(next){
 
 		if(!this.url) this.url = `users/${this.hash}`;
 
-		if(!this.pay_state){
-			this.pay_state = -1;
-		}
 	}else{
 		this.page = null;
 		this.gallery = null;

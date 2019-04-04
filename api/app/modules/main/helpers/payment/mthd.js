@@ -49,7 +49,7 @@ export default {
 
         if (!payment) return c(ctx, { "result": { "allow": -31050 } });
 
-        if (!payment.params.state) return c(ctx, { "result": { "allow": -31055 } });
+        if (payment.params.state != 1) return c(ctx, { "result": { "allow": -31055 } });
 
         if (body.params.amount < SUM) return c(ctx, { "result": { "allow": -31001 } });
 
@@ -87,7 +87,7 @@ export default {
                 
                 return c(ctx, { "result": { "allow": -31008 } })
             }
-            
+
             return create_transaction(ctx, payment);
         } else {
             let bool = await checkPerformTransaction(ctx, body);
@@ -106,10 +106,12 @@ export default {
         let { state, perform_time, transaction } = payment.params;
         if(state != 1){
             if(state != 2)  return c(ctx, { "result": { "allow": -31008 } });
+            
             return c(ctx, { 
                 "result": { state, perform_time, transaction } });
         }else if(state = 1){
             const bool = timestamp() <= payment.time_out;
+
             if (!bool) {
                 let a = await PaymentService.updatePayment({
                     params: { state: -1, reason: 4 } }, payment);

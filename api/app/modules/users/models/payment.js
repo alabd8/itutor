@@ -84,7 +84,7 @@ PaymentSchema.pre('save', function(next){
 		this.time_end = Date.now() + THIRTY_DAYS;
 	}
 	if(!this.params.transaction){
-		this.params.transaction = Math.ceil(Math.random() * 9999);
+		this.params.transaction = `${Math.ceil(Math.random() * 9999)}`;
 	}
 
 	next();
