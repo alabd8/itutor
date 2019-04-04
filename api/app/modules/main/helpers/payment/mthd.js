@@ -10,7 +10,7 @@ function c(ctx, obj) {
 
 async function create_transaction(ctx, transaction) {
     try {
-        const body = ctx.body.request;
+        const body = ctx.request.body;
         if(transaction.params.create_time){
             const payment = await PaymentService
                 .updatePayment({
@@ -114,11 +114,11 @@ export default {
             const bool = timestamp() <= payment.time_out;
 
             if (!bool) {
-                let a = await PaymentService.updatePayment({
+                await PaymentService.updatePayment({
                     params: { state: -1, reason: 4 } }, payment);
                 return c(ctx, { "result": { "allow": -31008 } })
             }
-            let user = await UserService.findOne({ uniqueID: body.params.id });
+            let user = await UserService.findOne({ uniqueID: payment.id });
             let amount = user.amount + payment.mock_amount;
             await UserService.updateUser({ amount }, user);
             payment = await PaymentService.updatePayment({
@@ -142,7 +142,7 @@ export default {
             let bool = payment.amount >= SUM
             if(!bool) return c(ctx, { "result": { "allow": -31008 } })
             
-            let user = await UserService.findOne({ uniqueID: body.params.id }); 
+            let user = await UserService.findOne({ uniqueID: payment.id }); 
             if(payment.amount <= user.amount){
                 let amount = user.amount - payment.amount;
                 await UserService.updateUser({ amount }, user);
