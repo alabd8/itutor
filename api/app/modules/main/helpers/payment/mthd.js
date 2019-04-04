@@ -92,8 +92,7 @@ export default {
             return create_transaction(ctx, payment);
         } else {
             let bool = await checkPerformTransaction(ctx, body);
-            if (!bool)
-                return c(ctx, { "result": { "allow": -31050 } });
+            if (!bool) return c(ctx, { "result": { "allow": -31050 } });
 
             return create_transaction(ctx, payment);
         }
@@ -120,7 +119,7 @@ export default {
             }
             let user = await UserService.findOne({ uniqueID: payment.id });
             let amount = user.amount + payment.mock_amount;
-            await UserService.updateUser({ amount }, user);
+            let a = await UserService.updateUser({ amount }, user);
             payment = await PaymentService.updatePayment({
                 amount: payment.mock_amount,
                 params: { state: 2, perform_time: timestamp() }
@@ -132,29 +131,32 @@ export default {
     },
 
     async cancelTransaction(ctx, body = null){
-        const payment = await PaymentService.findOne({ payment_id: body.params.id });
+        let payment = await PaymentService.findOne({ payment_id: body.params.id });
         if(!payment) return c(ctx, { "result": { "allow": -31003 } });
-        
+
         let { state, cancel_time, transaction } = payment.params;
         if(state != 1){
-            if(state != 2)  return c(ctx, { "result": { state, cancel_time, transaction } });
+            if(state != 2) return c(ctx, { "result": { state, cancel_time, transaction } });
             
-            let bool = payment.amount >= SUM
+            let bool = payment.amount >= SUM;
             if(!bool) return c(ctx, { "result": { "allow": -31008 } })
             
             let user = await UserService.findOne({ uniqueID: payment.id }); 
-            if(payment.amount <= user.amount){
-                let amount = user.amount - payment.amount;
-                await UserService.updateUser({ amount }, user);
-                payment = await PaymentService
-                        .updatePayment({ 
-                            params: 
-                                { state: -2, cancel_time: timestamp(), 
-                                    reason: body.params.reason }, amount: 0 });
-                let { state, cancel_time, transaction } = payment.params;
-                return c(ctx, { "result": { state, cancel_time, transaction } });
-            }
-            return c(ctx, { "result": { "allow": -31007 } })
+            bool = payment.amount <= user.amount;
+            if(!bool) return c(ctx, { "result": { "allow": -31007 } })    
+            
+            let amount = user.amount - payment.amount;
+            await UserService.updateUser({ amount }, user);
+            payment = await PaymentService
+                    .updatePayment({ 
+                        params: 
+                            { state: -2, cancel_time: timestamp(), 
+                                reason: body.params.reason }, amount: 0 }, payment);
+    
+            return c(ctx, { 
+                "result": { state: payment.params.state, 
+                            cancel_time: payment.params.cancel_time,
+                            transaction: payment.params.transaction } });
         }else if(state = 1){
             payment = await PaymentService
                         .updatePayment({ 
