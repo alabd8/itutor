@@ -16,10 +16,10 @@ async function create_transaction(ctx, transaction) {
                 .updatePayment({
                     params: { state: 1, create_time: transaction.params.create_time },
                     payment_id: body.params.id, mock_amount: body.params.amount,
-                    payment_unique_id: body.id
                 }, transaction);
             const pay = payment.params;
-            return c(ctx, { id: body.id,
+            return c(ctx, {
+                id: body.id,
                 "result": {
                     "create_time": pay.create_time,
                     "state": pay.state,
@@ -30,11 +30,11 @@ async function create_transaction(ctx, transaction) {
         const payment = await PaymentService
             .updatePayment({
                 params: { state: 1, create_time: timestamp() },
-                payment_id: body.params.id, mock_amount: body.params.amount,
-                payment_unique_id: body.id
+                payment_id: body.params.id, mock_amount: body.params.amount
             }, transaction);
         const pay = payment.params;
-        return c(ctx, { id: body.id,
+        return c(ctx, {
+            id: body.id,
             "result": {
                 "create_time": pay.create_time,
                 "state": pay.state,
@@ -43,7 +43,8 @@ async function create_transaction(ctx, transaction) {
         });
     } catch (e) {
         ctx.status = 200;
-        ctx.body = { id: body.id, result: null, 
+        ctx.body = {
+            id: body.id, result: null,
             error: { code: -32400, message: "Internal error" }
         };
     }
@@ -52,7 +53,6 @@ async function create_transaction(ctx, transaction) {
 export default {
     async checkPerformTransaction(ctx, body = null) {
         let payment = await PaymentService.findOne({ id: body.params.account.itutor });
-
         if (!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
@@ -72,11 +72,11 @@ export default {
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
 
-        return c(ctx, { id: payment_unique_id, "result": { "allow": true } });
+        return c(ctx, { id: body.id, result: { "allow": true } });
     },
 
     async createTransaction(ctx, body = null) {
-        if (body.params.amount <= SUM)  return c(ctx, {
+        if (body.params.amount <= SUM) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
@@ -115,11 +115,11 @@ export default {
                     params: {
                         state: -1, reason: 4,
                     },
-                    payment_id: body.params.id,
-                    payment_unique_id: body.id
+                    payment_id: body.params.id
                 }, payment);
 
-                return c(ctx, { id: body.id, result: null, 
+                return c(ctx, {
+                    id: body.id, result: null,
                     error: { code: -31008, message: "Unable to perform operation." }
                 });
             }
@@ -140,19 +140,18 @@ export default {
         let payment = await PaymentService.findOne({ payment_id: body.params.id });
 
         if (!payment) return c(ctx, {
-            id: payment.payment_unique_id,
+            id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
         });
 
         let { state, perform_time, transaction } = payment.params;
         if (state != 1) {
-            if (state != 2) return c(ctx, { id: payment.payment_unique_id, result: null, 
+            if (state != 2) return c(ctx, {
+                id: body.id, result: null,
                 error: { code: -31008, message: "Unable to perform operation." }
             });
 
-            return c(ctx, { id: payment.payment_unique_id,
-                "result": { state, perform_time, transaction }
-            });
+            return c(ctx, { id: body.id, result: { state, perform_time, transaction } });
         } else if (state = 1) {
             const bool = timestamp() <= payment.time_out;
 
@@ -160,21 +159,23 @@ export default {
                 await PaymentService.updatePayment({
                     params: { state: -1, reason: 4 }
                 }, payment);
-                return c(ctx, { id: payment.payment_unique_id, result: null, 
+                return c(ctx, {
+                    id: body.id, result: null,
                     error: { code: -31008, message: "Unable to perform operation." }
                 });
             }
             let user = await UserService.findOne({ uniqueID: payment.id });
             let amount = user.amount + payment.mock_amount;
-            let a = await UserService.updateUser({ amount }, user);
+            await UserService.updateUser({ amount }, user);
             payment = await PaymentService.updatePayment({
                 amount: payment.mock_amount,
                 params: { state: 2, perform_time: timestamp() }
             }, payment);
 
             let { state, perform_time, transaction } = payment.params;
-            return c(ctx, { id: payment.payment_unique_id,
-                 "result": { state, perform_time, transaction } 
+            return c(ctx, {
+                id: body.id,
+                result: { state, perform_time, transaction }
             });
         }
     },
@@ -182,28 +183,31 @@ export default {
     async cancelTransaction(ctx, body = null) {
         let payment = await PaymentService.findOne({ payment_id: body.params.id });
         if (!payment) return c(ctx, {
-            id: payment.payment_unique_id,
+            id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
         });
 
         let { state, cancel_time, transaction } = payment.params;
         if (state != 1) {
-            if (state != 2) return c(ctx, { id: payment.payment_unique_id,
-                "result": { state, cancel_time, transaction } 
+            if (state != 2) return c(ctx, {
+                id: body.id,
+                result: { state, cancel_time, transaction }
             });
 
             let bool = payment.amount >= SUM;
-            if (!bool) return c(ctx, { id: payment.payment_unique_id, result: null, 
+            if (!bool) return c(ctx, {
+                id: body.id, result: null,
                 error: { code: -31008, message: "Unable to perform operation." }
             });
 
             let user = await UserService.findOne({ uniqueID: payment.id });
             bool = payment.amount <= user.amount;
-            if (!bool) return c(ctx, { id: payment.payment_unique_id, result: null, 
-                error: { 
-                    code: -31007, 
+            if (!bool) return c(ctx, {
+                id: body.id, result: null,
+                error: {
+                    code: -31007,
                     message: `Order completed. Cannot cancel transaction. 
-                    The product or service is provided to the buyer in full.` 
+                    The product or service is provided to the buyer in full.`
                 }
             });
 
@@ -218,8 +222,9 @@ export default {
                     }, amount: 0
                 }, payment);
 
-            return c(ctx, { id: payment.payment_unique_id,
-                "result": {
+            return c(ctx, {
+                id: body.id,
+                result: {
                     state: payment.params.state,
                     cancel_time: payment.params.cancel_time,
                     transaction: payment.params.transaction
@@ -235,23 +240,22 @@ export default {
                     }, amount: 0
                 });
             let { state, cancel_time, transaction } = payment.params;
-            return c(ctx, { id: payment.payment_unique_id,
-                "result": { state, cancel_time, transaction } 
-            });
+            return c(ctx, { id: body.id, result: { state, cancel_time, transaction } });
         }
     },
 
     async checkTransaction(ctx, body = null) {
         const payment = await PaymentService.findOne({ payment_id: body.params.id });
         if (!payment) return c(ctx, {
-            id: payment.payment_unique_id,
+            id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
         });
         const {
             create_time, perform_time, cancel_time, transaction, state, reason
         } = payment.params;
-        return c(ctx, { id: payment.payment_unique_id,
-            "result": { create_time, perform_time, cancel_time, transaction, state, reason }
+        return c(ctx, {
+            id: body.id,
+            result: { create_time, perform_time, cancel_time, transaction, state, reason }
         });
     },
 }

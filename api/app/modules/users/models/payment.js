@@ -55,7 +55,7 @@ const PaymentSchema = new mongoose.Schema({
 		default: null
 	},
 	payment_unique_id: {
-		type: String,
+		type: Number,
 		default: 0
 	},
 	payment_id: {
