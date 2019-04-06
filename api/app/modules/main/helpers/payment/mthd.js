@@ -305,9 +305,9 @@ export default {
             });
         }
         let payment = [];
-        for(let i = 0; i < payment.length; i++){
+        for(let i = 0; i < payments.length; i++){
            if(from <= payments[i].params.time && payments[i].params.time <= to){
-                payment.push(payments[i]);
+                payment.push(payments[i].params);
            } 
         }
         return c(ctx, {
