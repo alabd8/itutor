@@ -33,10 +33,7 @@ async function create_transaction(ctx, transaction) {
         }
         const payment = await PaymentService
             .updatePayment({
-                params: { 
-                    state: 1, create_time: body.params.time, time: body.params.time,
-                    amount: body.params.mount
-                },
+                params: { state: 1, create_time: body.params.time, time: body.params.time },
                 payment_id: body.params.id, mock_amount: body.params.amount
             }, transaction);
         const pay = payment.params;
@@ -276,7 +273,7 @@ export default {
                     {
                         state: -1, cancel_time: timestamp(),
                         reason: body.params.reason
-                    }, amount: 0
+                    }
                 }, payment);
             let { state, cancel_time, transaction } = payment.params;
             return c(ctx, { id: body.id, result: { state, cancel_time, transaction } });

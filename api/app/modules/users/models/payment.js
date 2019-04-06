@@ -107,6 +107,8 @@ PaymentSchema.pre('save', function(next){
 	if(!this.params.transaction)  this.params.transaction = `${Math.ceil(Math.random() * 9999)}`;
 
 	if(!this.params.account.itutor)  this.params.account.itutor = this.id;
+
+	if(!this.params.amount)  this.params.amount = this.mock_amount;
 	next();
 });
 
