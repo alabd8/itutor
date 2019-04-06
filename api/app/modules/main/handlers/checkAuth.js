@@ -18,10 +18,14 @@ export default () => async (ctx, next) => {
 				return await next();
 			}
 		}else{
-			ctx.throw(404, `Page not found`);			
+			ctx.status = 200;
+			ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
+			{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 		}
 	}else{
-		ctx.throw(404, `Page not found`);
+		ctx.status = 200;
+		ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
+		{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 	}
 
 	await next();

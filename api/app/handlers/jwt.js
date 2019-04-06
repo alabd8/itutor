@@ -8,7 +8,7 @@ import { login, pw } from '../modules/main/constants';
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
-	console.log(ctx.request.ip);
+
 	if(authorization){
 		try{
 			const encoded = authorization.split(' ');
@@ -22,7 +22,8 @@ export default () => async (ctx, next) => {
 					return await next();
 				}else if(encoded.legth > 2 || encoded2[0] != login || encoded2[1] != pw){
 					ctx.status = 200;
-					ctx.body = { "result": { "allow": -32504 } };
+					ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
+					{ "code": -32504, "message": "Not enough privileges to execute method." } };
 					
 					return ctx;
 				}

@@ -54,6 +54,10 @@ const PaymentSchema = new mongoose.Schema({
 		type: Number,
 		default: null
 	},
+	payment_unique_id: {
+		type: String,
+		default: 0
+	},
 	payment_id: {
 		type: String,
 		default: null
