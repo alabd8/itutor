@@ -81,7 +81,7 @@ export default {
 
     async createTransaction(ctx, body) {
         const itutor = body.params.account.itutor;
-        if (!itutor) return c(ctx, {
+        if (!itutor || typeof itutor != 'number') return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
