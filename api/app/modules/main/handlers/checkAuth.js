@@ -21,10 +21,12 @@ export default () => async (ctx, next) => {
 			ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
 			{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 		}
+	}{
+		ctx.status = 200;
+		ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
+		{ "code": -32504, "message": "Not enough privileges to execute method." } };
+		return ctx;		
 	}
-	ctx.status = 200;
-	ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
-	{ "code": -32504, "message": "Not enough privileges to execute method." } };			
-
+		
 	await next();
 }
