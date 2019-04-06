@@ -5,7 +5,6 @@ import { pw, login } from "../constants";
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
-	
 	if(authorization){
 		const encoded = authorization.split(' ');
 		if(encoded[0] && encoded[1]){
@@ -22,11 +21,10 @@ export default () => async (ctx, next) => {
 			ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
 			{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 		}
-	}else{
-		ctx.status = 200;
-		ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
-		{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 	}
+	ctx.status = 200;
+	ctx.body = { "id": ctx.request.body.id, "result": null, "error": 
+	{ "code": -32504, "message": "Not enough privileges to execute method." } };			
 
 	await next();
 }

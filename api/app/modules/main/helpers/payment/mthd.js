@@ -80,15 +80,15 @@ export default {
     },
 
     async createTransaction(ctx, body) {
-        if (body.params.amount <= SUM) return c(ctx, {
-            id: body.id,
-            result: null, error: { code: -31001, message: "Incorrect amount." }
-        });
-
         const itutor = body.params.account.itutor;
         if (!itutor) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
+        });
+
+        if (body.params.amount <= SUM) return c(ctx, {
+            id: body.id,
+            result: null, error: { code: -31001, message: "Incorrect amount." }
         });
 
         let user = await UserService.findOne({ uniqueID: itutor });
