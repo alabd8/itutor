@@ -54,13 +54,13 @@ export default {
         let payment = await PaymentService.findOne({ id: body.params.account.itutor });
 
         if (!payment) return c(ctx, {
-            id: payment_unique_id,
+            id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
 
         if (payment.params.state != 1)
             return c(ctx, {
-                id: payment_unique_id,
+                id: body.id,
                 result: null, error: {
                     code: -31055,
                     message: "Acceptance of payment is not possible."
@@ -68,7 +68,7 @@ export default {
             });
 
         if (body.params.amount <= SUM) return c(ctx, {
-            id: payment_unique_id,
+            id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
 
