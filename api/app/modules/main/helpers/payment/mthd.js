@@ -144,7 +144,7 @@ export default {
             result: null, error: { code: -31003, message: "Transaction not found" }
         });
 
-        let { state, perform_time, transaction } = payment.params;
+        let { state } = payment.params;
         if (state != 1) {
             if (state != 2) return c(ctx, {
                 id: body.id, result: null,
@@ -156,10 +156,10 @@ export default {
                 params: { state: 2, perform_time: timestamp() }
             }, payment);
 
-            let { state, perform_time, transaction } = payment.params;
+            let { perform_time, transaction } = payment.params;
             return c(ctx, {
                 id: body.id,
-                result: { state, perform_time, transaction }
+                result: { state: payment.params.state, perform_time, transaction }
             });
         } else if (state = 1) {
             const bool = timestamp() <= payment.time_out;
@@ -181,10 +181,10 @@ export default {
                 params: { state: 2, perform_time: timestamp() }
             }, payment);
 
-            let { state, perform_time, transaction } = payment.params;
+            let { perform_time, transaction } = payment.params;
             return c(ctx, {
                 id: body.id,
-                result: { state, perform_time, transaction }
+                result: { state: payment.params.state, perform_time, transaction }
             });
         }
     },
@@ -204,7 +204,7 @@ export default {
             });
 
             let user = await UserService.findOne({ uniqueID: payment.id });
-            bool = payment.amount <= user.amount;
+            let bool = payment.amount <= user.amount;
             if (!bool) return c(ctx, {
                 id: body.id, result: null,
                 error: {
@@ -241,7 +241,7 @@ export default {
                         state: -1, cancel_time: timestamp(),
                         reason: body.params.reason
                     }, amount: 0
-                });
+                }, payment);
             let { state, cancel_time, transaction } = payment.params;
             return c(ctx, { id: body.id, result: { state, cancel_time, transaction } });
         }
