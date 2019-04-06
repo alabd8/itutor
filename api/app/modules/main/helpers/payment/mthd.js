@@ -150,8 +150,17 @@ export default {
                 id: body.id, result: null,
                 error: { code: -31008, message: "Unable to perform operation." }
             });
+            
+            payment = await PaymentService.updatePayment({
+                amount: payment.mock_amount,
+                params: { state: 2, perform_time: timestamp() }
+            }, payment);
 
-            return c(ctx, { id: body.id, result: { state, perform_time, transaction } });
+            let { state, perform_time, transaction } = payment.params;
+            return c(ctx, {
+                id: body.id,
+                result: { state, perform_time, transaction }
+            });
         } else if (state = 1) {
             const bool = timestamp() <= payment.time_out;
 
@@ -192,12 +201,6 @@ export default {
             if (state != 2) return c(ctx, {
                 id: body.id,
                 result: { state, cancel_time, transaction }
-            });
-
-            let bool = payment.amount >= SUM;
-            if (!bool) return c(ctx, {
-                id: body.id, result: null,
-                error: { code: -31008, message: "Unable to perform operation." }
             });
 
             let user = await UserService.findOne({ uniqueID: payment.id });
