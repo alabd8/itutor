@@ -11,8 +11,6 @@ function c(ctx, obj) {
 async function create_transaction(ctx, transaction) {
     try {
         const body = ctx.request.body;
-console.log("HI 1: ", transaction.payment_id == body.params.id && transaction.params.create_time);
-console.log("HI 2: ", transaction.params.create_time && transaction.payment_id != body.params.id);
         if (transaction.payment_id == body.params.id && transaction.params.create_time) {
             const payment = await PaymentService
                 .updatePayment({
@@ -80,20 +78,20 @@ export default {
             result: null, error: { code: -31050, message: "Login not found." }
         });
 
-        if (payment.params.state != 1)
-            return c(ctx, {
-                id: body.id,
-                result: null, error: {
-                    code: -31055,
-                    message: "Acceptance of payment is not possible."
-                }
-            });
+        // if (payment.ignoredByAdmin)
+        //     return c(ctx, {
+        //         id: body.id,
+        //         result: null, error: {
+        //             code: -31055,
+        //             message: "Acceptance of payment is not possible."
+        //         }
+        //     });
 
         if (body.params.amount <= SUM) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
-
+        await PaymentService.updatePayment({ params: { state: 1 }});
         return c(ctx, { id: body.id, result: { "allow": true } });
     },
 
