@@ -91,7 +91,7 @@ export default {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
-        await PaymentService.updatePayment({ params: { state: 1 }});
+        await PaymentService.updatePayment({ params: { state: 1 }}, payment);
         return c(ctx, { id: body.id, result: { "allow": true } });
     },
 
