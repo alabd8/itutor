@@ -11,7 +11,7 @@ function c(ctx, obj) {
 async function create_transaction(ctx, transaction) {
     try {
         const body = ctx.request.body;
-        if (transaction.payment_id == body.params.id) {
+        if (transaction.payment_id == body.params.id || transaction.payment_id) {
             const payment = await PaymentService
                 .updatePayment({
                     params: { 
