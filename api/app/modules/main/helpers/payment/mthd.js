@@ -11,6 +11,8 @@ function c(ctx, obj) {
 async function create_transaction(ctx, transaction) {
     try {
         const body = ctx.request.body;
+console.log("HI 1: ", transaction.payment_id == body.params.id && transaction.params.create_time);
+console.log("HI 2: ", transaction.params.create_time && transaction.payment_id != body.params.id);
         if (transaction.payment_id == body.params.id && transaction.params.create_time) {
             const payment = await PaymentService
                 .updatePayment({
@@ -24,12 +26,28 @@ async function create_transaction(ctx, transaction) {
             const pay = payment.params;
             return c(ctx, {
                 id: body.id,
-                "result": {
-                    "create_time": pay.create_time,
-                    "state": pay.state,
-                    "transaction": `${pay.transaction}`
+                result: {
+                    create_time: pay.create_time,
+                    state: pay.state,
+                    transaction: `${pay.transaction}`
                 }
             }); 
+        }
+        if(transaction.params.create_time && transaction.payment_id != body.params.id){
+            const payment = await PaymentService
+                .updatePayment({
+                    params: { state: 1, create_time: timestamp(), time: body.params.time },
+                    mock_amount: body.params.amount
+                }, transaction);
+            const pay = payment.params;
+            return c(ctx, {
+                id: body.id,
+                result: {
+                    create_time: pay.create_time,
+                    state: pay.state,
+                    transaction: `${pay.transaction}`
+                }
+            });
         }
         const payment = await PaymentService
             .updatePayment({
@@ -39,10 +57,10 @@ async function create_transaction(ctx, transaction) {
         const pay = payment.params;
         return c(ctx, {
             id: body.id,
-            "result": {
-                "create_time": pay.create_time,
-                "state": pay.state,
-                "transaction": `${pay.transaction}`
+            result: {
+                create_time: pay.create_time,
+                state: pay.state,
+                transaction: `${pay.transaction}`
             }
         });
     } catch (e) {
