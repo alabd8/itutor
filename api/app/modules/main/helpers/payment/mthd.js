@@ -11,7 +11,7 @@ function c(ctx, obj) {
 async function create_transaction(ctx, transaction) {
     try {
         const body = ctx.request.body;
-        if (transaction.payment_id == body.params.id || transaction.payment_id) {
+        if (transaction.payment_id == body.params.id && transaction.params.create_time) {
             const payment = await PaymentService
                 .updatePayment({
                     params: { 
@@ -87,7 +87,7 @@ export default {
         });
 
         let user = await UserService.findOne({ uniqueID: itutor });
-        if (!user) return c(ctx, {
+        if (!user.pay_state || !user) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
@@ -149,6 +149,7 @@ export default {
         });
 
         let { state } = payment.params;
+        let user = await UserService.findOne({ uniqueID: payment.id, hash: payment.userHash });
         if (state != 1) {
             if (state != 2) return c(ctx, {
                 id: body.id, result: null,
@@ -164,6 +165,7 @@ export default {
                     }
                 });    
             }
+            await UserService.updateUser({ pay_state: 0 }, user);
             payment = await PaymentService.updatePayment({
                 amount: payment.mock_amount,
                 params: { state: 2, perform_time: timestamp() }
@@ -188,7 +190,7 @@ export default {
             }
             let user = await UserService.findOne({ uniqueID: payment.id });
             let amount = user.amount + payment.mock_amount;
-            await UserService.updateUser({ amount }, user);
+            await UserService.updateUser({ amount, pay_state: 0 }, user);
             payment = await PaymentService.updatePayment({
                 amount: payment.mock_amount,
                 params: { state: 2, perform_time: timestamp() }
