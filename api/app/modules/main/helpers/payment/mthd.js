@@ -11,14 +11,14 @@ function c(ctx, obj) {
 async function create_transaction(ctx, transaction) {
     try {
         const body = ctx.request.body;
-        if (transaction.params.create_time) {
+        if (transaction.payment_id == body.params.id) {
             const payment = await PaymentService
                 .updatePayment({
                     params: { 
-                        state: 1, create_time: timestamp(),
+                        state: 1, create_time: transaction.params.create_time,
                         time: transaction.params.time
                     },
-                    payment_id: body.params.id, mock_amount: body.params.amount,
+                    payment_id: transaction.payment_id, mock_amount: body.params.amount,
 
                 }, transaction);
             const pay = payment.params;
@@ -29,7 +29,7 @@ async function create_transaction(ctx, transaction) {
                     "state": pay.state,
                     "transaction": `${pay.transaction}`
                 }
-            });
+            }); 
         }
         const payment = await PaymentService
             .updatePayment({
