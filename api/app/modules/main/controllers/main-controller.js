@@ -126,6 +126,7 @@ export default {
 			if(payment.params.state == 1){
 				ctx.status = 200; 
 				ctx.body = { message: `success` };
+				return ctx;
 			} 
 
 		await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
