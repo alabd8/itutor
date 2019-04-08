@@ -1,4 +1,5 @@
 import pick from 'lodash/pick';
+import fs from 'fs';
 import { infoLog } from '../../../utils/logs/logger';
 
 import checkEnumValues from '../../../helpers/checkEnumValues';
@@ -15,9 +16,9 @@ import { UserService } from '../../users/services';
 export default {
 	async signup(ctx){
 		await checkEnumValues(ctx);
-
+		// console.log("AAAAAAAAAAAAAAAAA: , ", ctx.request.body.img);
 		const userData = await extract(ctx);
-
+		// console.log(userData.img);
 		infoLog.info('Request to - /menu/auth/signup/student: ', ctx);
 
 		const { _id } = await UserService.createUser(userData);
@@ -38,7 +39,10 @@ export default {
 		
 		const { _id } = await UserService.updateUser({ state: 1 }, credentials);
 		const user = await User.findOne({ _id });
-
+		// fs.readFile(`../../../../images/${user.img.fileName}`, function (err, data) {
+		// 	if (err) throw err;
+		// 	console.log(data);
+		// });
 		
 
 		infoLog.info('Request to - /menu/auth/signin: ', ctx);

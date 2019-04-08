@@ -1,5 +1,9 @@
+import fs from 'fs'; 
+
 import { SUM, timestamp } from '../../constants';
 import { UserService, PaymentService } from '../../../users/services';
+
+import { errLog, debLog } from '../../../../utils/logs/logger';
 
 function c(ctx, obj) {
     ctx.status = 200;
@@ -314,5 +318,25 @@ export default {
             id: body.id,
             result: { transactions: payment }
         });
+    },
+
+    async changePassword(ctx, body){
+        // let data = body.params.password;
+        // let path = '../../../../utils/payme.txt';
+        
+        // fs.access(path, fs.F_OK, (err) => {
+        //     if(err) debLog.debug(`File does not exist - ${err}`);
+
+            
+        // }, 
+         
+        // fs.writeFile(, data, (err) => { 
+        //     if (err) return c(ctx, {
+        //         id: body.id,
+        //         result: null,
+        //         error: 
+        //         { code: -32504, message: "Not enough privileges to execute method." }
+        //     })  
+        // }) 
     }
 }

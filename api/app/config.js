@@ -2,7 +2,7 @@ import config from 'config';
 import dotenv from 'dotenv';
 import envs from './constants/envs';
 import env, { IS_TEST } from './utils/env';
-import { errLog } from './utils/logs/logger'; 
+import { errLog } from './utils/logs/logger';
 
 if(!IS_TEST){
 	dotenv.config();
