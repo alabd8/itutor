@@ -84,7 +84,7 @@ export default {
     },
 
     async createTransaction(ctx, body) {
-        const itutor = body.params.account.itutor;
+        const itutor = Number(body.params.account.itutor);
         if (!itutor || typeof itutor != 'number') return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
@@ -286,6 +286,7 @@ export default {
 
     async checkTransaction(ctx, body) {
         const payment = await PaymentService.findOne({ payment_id: body.params.id });
+
         if (!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
