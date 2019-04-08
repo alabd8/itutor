@@ -119,21 +119,17 @@ export default {
 								  	
 		if(!data.pay_state) ctx.throw(400, 'Invalid credentials');
 
-		try{
-			const user = await UserService.updateUser(data, person);
-			const payment = await PaymentService.findOne({ userHash: user.hash, 
-														   id: user.uniqueID });
-			if(payment)
-				if(payment.params.state) ctx.throw(400, `Payment already exist`);
-	
-			await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
-							    				 params: { state: user.pay_state } });
+		const user = await UserService.updateUser(data, person);
+		const payment = await PaymentService.findOne({ userHash: user.hash, 
+															 id: user.uniqueID });
+		if(payment)
+			if(payment.params.state == 1){
+				ctx.status = 200; 
+				ctx.body = { message: `success` };
+			} 
 
-		}catch({ status, message, name }){
-			name === 'BadRequestError' ? 
-			ctx.throw(400, `${name}. ${message}`) :
-			ctx.throw(400, `Can not create payment`);
-		}
+		await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
+											   params: { state: user.pay_state } });
 
 		ctx.status = 200;
 		ctx.body = { message: 'success' };
