@@ -1,9 +1,5 @@
-import fs from 'fs'; 
-
 import { SUM, timestamp } from '../../constants';
 import { UserService, PaymentService } from '../../../users/services';
-
-import { errLog, debLog } from '../../../../utils/logs/logger';
 
 function c(ctx, obj) {
     ctx.status = 200;
@@ -19,7 +15,7 @@ async function create_transaction(ctx, transaction) {
             const payment = await PaymentService
                 .updatePayment({
                     params: { 
-                        state: 1, create_time: transaction.params.create_time,
+                        state: 1, create_time: timestamp(),
                         time: transaction.params.time
                     },
                     payment_id: body.params.id, mock_amount: body.params.amount,
@@ -37,7 +33,7 @@ async function create_transaction(ctx, transaction) {
         }
         const payment = await PaymentService
             .updatePayment({
-                params: { state: 1, create_time: body.params.time, time: body.params.time },
+                params: { state: 1, create_time: timestamp(), time: body.params.time },
                 payment_id: body.params.id, mock_amount: body.params.amount
             }, transaction);
         const pay = payment.params;
