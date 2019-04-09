@@ -8,9 +8,30 @@ function c(ctx, obj) {
     return ctx;
 };
 
+async function cycle(data){
+    let payment;
+    if(data.payment_id){
+        payment = await PaymentService.findOne({ payment_id: data.payment_id });
+        return payment;
+    }
+    if(data.id){
+        let payments = await PaymentService.find({ id: data.id });
+        for(let i = 0; i < payments.length; i++){
+            if(payments[i].params.state == 1) payment = payments[i];
+        }
+        return payment;
+    }
+    let payments = await PaymentService.find({ userHash: data.user.hash, id: data.itutor });
+    for(let i = 0; i < payments.length; i++){
+        if(payments[i].params.state == 1) payment = payments[i];
+    }
+    return payment;
+};
+
 async function create_transaction(ctx, transaction) {
+    const { request: { body } } = ctx;
+    ctx.state.payment = null;    
     try {
-        const body = ctx.request.body;
         if (transaction.payment_id == body.params.id && transaction.params.create_time) {
             const payment = await PaymentService
                 .updatePayment({
@@ -34,14 +55,15 @@ async function create_transaction(ctx, transaction) {
         if(transaction.params.create_time && transaction.payment_id != body.params.id){
             const payment = await PaymentService
                 .updatePayment({
-                    params: { state: 1, create_time: timestamp(), time: body.params.time },
-                    mock_amount: body.params.amount
+                    params: { state: 1, time: body.params.time, 
+                              create_time: transaction.params.create_time,
+                    },mock_amount: body.params.amount
                 }, transaction);
             const pay = payment.params;
             return c(ctx, {
                 id: body.id,
                 result: {
-                    create_time: pay.create_time,
+                    create_time: timestamp(),
                     state: pay.state,
                     transaction: `${pay.transaction}`
                 }
@@ -72,26 +94,18 @@ async function create_transaction(ctx, transaction) {
 
 export default {
     async checkPerformTransaction(ctx, body) {
-        let payment = await PaymentService.findOne({ id: body.params.account.itutor });
+        let payment = await cycle({ id: body.params.account.itutor });
         if (!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
 
-        // if (payment.ignoredByAdmin)
-        //     return c(ctx, {
-        //         id: body.id,
-        //         result: null, error: {
-        //             code: -31055,
-        //             message: "Acceptance of payment is not possible."
-        //         }
-        //     });
-
         if (body.params.amount <= SUM) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
-        await PaymentService.updatePayment({ params: { state: 1 }}, payment);
+        payment = await PaymentService.updatePayment({ params: { state: 1 }}, payment);
+        ctx.state.payment = payment;
         return c(ctx, { id: body.id, result: { "allow": true } });
     },
 
@@ -103,7 +117,7 @@ export default {
         });
 
         let user = await UserService.findOne({ uniqueID: itutor });
-        if (!user.pay_state || !user) return c(ctx, {
+        if(!user || !user.pay_state) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
@@ -113,12 +127,14 @@ export default {
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
 
-        let payment = await PaymentService
-            .findOne({ userHash: user.hash, id: itutor });
+        let payment = await cycle({ user, itutor });
+        if(!payment) return c(ctx, {
+            id: body.id,
+            result: null, error: { code: -31050, message: "Login not found." }
+        });
 
         if (!payment.payment_id)
-            payment = await PaymentService.updatePayment({ payment_id: body.params.id },
-                payment);
+            payment = await PaymentService.updatePayment({ payment_id: body.params.id }, payment);
 
         // if (payment.payment_id != body.params.id) // одноразовый счет
         // return c(ctx, { "result": { "allow": -31050 } });
@@ -146,18 +162,17 @@ export default {
 
             return create_transaction(ctx, payment);
         } else {
-            let bool = await checkPerformTransaction(ctx, body);
+            let bool = await this.checkPerformTransaction(ctx, body);
             if (!bool) return c(ctx, {
                 id: body.id,
                 result: null, error: { code: -31050, message: "Login not found." }
             });
-
-            return create_transaction(ctx, payment);
+            return create_transaction(ctx, ctx.state.payment);
         }
     },
 
     async performTransaction(ctx, body) {
-        let payment = await PaymentService.findOne({ payment_id: body.params.id });
+        let payment = await cycle({ payment_id: body.params.id });
 
         if (!payment) return c(ctx, {
             id: body.id,
@@ -221,7 +236,7 @@ export default {
     },
 
     async cancelTransaction(ctx, body) {
-        let payment = await PaymentService.findOne({ payment_id: body.params.id });
+        let payment = await cycle({ payment_id: body.params.id });
         if (!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
@@ -299,7 +314,7 @@ export default {
     },
 
     async checkTransaction(ctx, body) {
-        const payment = await PaymentService.findOne({ payment_id: body.params.id });
+        const payment = await cycle({ payment_id: body.params.id });
 
         if (!payment) return c(ctx, {
             id: body.id,
@@ -333,25 +348,5 @@ export default {
             id: body.id,
             result: { transactions: payment }
         });
-    },
-
-    async changePassword(ctx, body){
-        // let data = body.params.password;
-        // let path = '../../../../utils/payme.txt';
-        
-        // fs.access(path, fs.F_OK, (err) => {
-        //     if(err) debLog.debug(`File does not exist - ${err}`);
-
-            
-        // }, 
-         
-        // fs.writeFile(, data, (err) => { 
-        //     if (err) return c(ctx, {
-        //         id: body.id,
-        //         result: null,
-        //         error: 
-        //         { code: -32504, message: "Not enough privileges to execute method." }
-        //     })  
-        // }) 
     }
 }

@@ -17,8 +17,10 @@ export default {
 			throw new AppError({ status: 400, ...e });
 		}
 	},
-	async find(){
-		return Payment.find().select({ createdAt: 0, _id: 0, __v: 0 });
+	async find(data){
+		if(data) return Payment.find(data).select({ createdAt: 0, __v: 0, hash: 0 });
+		
+		return Payment.find().select({ createdAt: 0, __v: 0, hash: 0 });
 	},
 	async findOne(params){
 		return Payment.findOne(params).select({ createdAt: 0, hash: 0, __v: 0 });

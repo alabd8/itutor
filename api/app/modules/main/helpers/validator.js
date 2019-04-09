@@ -1,30 +1,21 @@
-import payment from './payment/mthd';
+import { UserService, PaymentService } from "../../users/services";
 
-export default async (ctx, body = null) => {
-    if (!body) {
-        ctx.status = 408;
-        ctx.body = { message: `Body does not exist` };
-    } else {
-        try {
-            switch (body.method) {
-                case 'CheckPerformTransaction':
-                    return await payment.checkPerformTransaction(ctx, body);
-                case 'CreateTransaction':
-                    return await payment.createTransaction(ctx, body);
-                case 'PerformTransaction':
-                    return await payment.performTransaction(ctx, body);
-                case 'CancelTransaction':
-                    return await payment.cancelTransaction(ctx, body);
-                case 'CheckTransaction':
-                    return await payment.checkTransaction(ctx, body);
-                case 'GetStatement':
-                    return await payment.getStatement(ctx, body);
-                case 'ChangePassword':
-                    return await payment.changePassword(ctx, body);
+export default async (ctx, data, person) => {
+    const user = await UserService.updateUser(data, person);
+	const payment = await PaymentService.find({ userHash: user.hash, 
+												id: user.uniqueID });
+    if(payment.length > 0){
+        for(let i = 0; i < payment.length; i++){
+            if(payment[i].params.state == 1){
+                ctx.status = 200;
+                ctx.body = { message: 'success' };
+                return ctx;
             }
-        } catch (e) {
-            ctx.status = 200;
-            ctx.body = { message: e.message };
-        }
+        }	
     }
+    await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
+                                         params: { state: user.pay_state } });
+    ctx.status = 200;
+    ctx.body = { message: 'success' };
+    return ctx;
 }

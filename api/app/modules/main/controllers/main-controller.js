@@ -1,14 +1,10 @@
-import pick from 'lodash/pick';
-import setCtx from '../../../helpers/setCtx';
 import search from '../helpers/search';
 import filter from '../helpers/filter';
-import menu from '../helpers/menu';
 import { infoLog, debLog } from '../../../utils/logs/logger';
 import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
+import payment from '../helpers/payment';
 import validator from '../helpers/validator';
-// import { valid1, valid2 } from '../constants';
-import { UserService, PaymentService } from '../../users/services';
 
 export default {
 	async main(ctx){
@@ -20,7 +16,7 @@ export default {
 
 		infoLog.info('Request to - /: ', ctx);
 
-		await validator(ctx, body);
+		await payment(ctx, body);
 
 		infoLog.info('Response to - /: ', ctx.body);
 
@@ -119,21 +115,7 @@ export default {
 								  	
 		if(!data.pay_state) ctx.throw(400, 'Invalid credentials');
 
-		const user = await UserService.updateUser(data, person);
-		const payment = await PaymentService.findOne({ userHash: user.hash, 
-															 id: user.uniqueID });
-		if(payment)
-			if(payment.params.state == 1){
-				ctx.status = 200; 
-				ctx.body = { message: `success` };
-				return ctx;
-			} 
-
-		await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
-											   params: { state: user.pay_state } });
-
-		ctx.status = 200;
-		ctx.body = { message: 'success' };
+		await validator(ctx, data, person);
 	},
 
 	async check(ctx){
