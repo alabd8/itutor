@@ -33,6 +33,7 @@ async function create_transaction(ctx, transaction) {
     ctx.state.payment = null;    
     try {
         if (transaction.payment_id == body.params.id && transaction.params.create_time) {
+            console.log("STATEMENT 1");
             const payment = await PaymentService
                 .updatePayment({
                     params: { 
@@ -52,7 +53,11 @@ async function create_transaction(ctx, transaction) {
                 }
             }); 
         }
+        console.log("FIRST IS: ", transaction.params.create_time);
+        console.log("SECOND IS: ",  transaction.payment_id != body.params.id);
+        console.log("THIRD IS: ", transaction.params.create_time && transaction.payment_id != body.params.id);
         if(transaction.params.create_time && transaction.payment_id != body.params.id){
+            console.log("STATEMENT 2");
             const payment = await PaymentService
                 .updatePayment({
                     params: { state: 1, time: body.params.time, 
@@ -69,7 +74,8 @@ async function create_transaction(ctx, transaction) {
                 }
             });
         }
-        const payment = await PaymentService
+            console.log("STATEMENT 3");
+            const payment = await PaymentService
             .updatePayment({
                 params: { state: 1, create_time: timestamp(), time: body.params.time },
                 payment_id: body.params.id, mock_amount: body.params.amount
@@ -237,6 +243,7 @@ export default {
 
     async cancelTransaction(ctx, body) {
         let payment = await cycle({ payment_id: body.params.id });
+        consolelog("PAYMENT PAYMENT PAYMENT PAYMENT: ", payment);
         if (!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31003, message: "Transaction not found" }
