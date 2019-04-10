@@ -94,19 +94,39 @@ async function create_transaction(ctx, transaction) {
 
 export default {
     async checkPerformTransaction(ctx, body) {
-        let payment = await cycle({ id: body.params.account.itutor });
-        if (!payment) return c(ctx, {
+        const itutor = Number(body.params.account.itutor);
+        if (!itutor || typeof itutor != 'number') return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
-
-        if (body.params.amount <= SUM) return c(ctx, {
+        if (body.params.amount < SUM) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
         });
-        payment = await PaymentService.updatePayment({ params: { state: 1 }}, payment);
-        ctx.state.payment = payment;
+
+        let user = await UserService
+            .findOneAndUpdate({ uniqueID: body.params.account.itutor }, { pay_state: 1 });
+        if(!user) return c(ctx, {
+            id: body.id,
+            result: null, error: { code: -31050, message: "Login not found." }
+        });
+        
+        let payment = await PaymentService.find({ userHash: user.hash, 
+                                                  id: user.uniqueID });
+        if(payment.length > 0){
+            for(let i = 0; i < payment.length; i++){
+                if(payment[i]){
+                    if(payment[i].params.state == 1){
+                        ctx.state.payment = payment[i];
+                        return c(ctx, { id: body.id, result: { "allow": true } });
+                    }
+                }
+            }	
+        }
+        await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
+                                             params: { state: user.pay_state } });
         return c(ctx, { id: body.id, result: { "allow": true } });
+
     },
 
     async createTransaction(ctx, body) {

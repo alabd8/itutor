@@ -32,6 +32,10 @@ export default {
 	async findOne(params){
 		return User.findOne(params).select({ createdAt: 0, password: 0, __v: 0 });
 	},
+	async findOneAndUpdate(data, params){
+		return User.findOneAndUpdate(data, { $set: params }, { new: true })
+					.select({ createdAt: 0, password: 0, __v: 0 });
+	},
 	async count(){
 		return User.count();
 	},
