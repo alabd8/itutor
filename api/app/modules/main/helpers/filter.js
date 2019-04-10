@@ -8,9 +8,9 @@ export default async (ctx, user, result, body = null) => {
 	const data = async (role) => {
 		let data;
 		if(role){
-			data = { role, 'page.course.title': title, 'page.course.category': category}
+			data = { role, 'page.course.title': title, 'page.course.category': category }
 		}else{
-			data = { 'page.course.title': title, 'page.course.category': category}
+			data = { 'page.course.title': title, 'page.course.category': category }
 		}
 		return data;
 	}

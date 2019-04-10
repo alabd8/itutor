@@ -52,10 +52,10 @@ const UserSchema = new mongoose.Schema({
 		type: Object
 	},
 	saves: [{
-		type: String,
+		type: String
 	}],
 	active: [{
-		type: String,
+		type: String
 	}],
 	hash: {
 		type: String,
@@ -63,13 +63,13 @@ const UserSchema = new mongoose.Schema({
 	},
 	page: {
 		link: {
-			type: String,
+			type: String
 		},
 		linkFull: {
-			type: String,
+			type: String
 		},
 		name: { 
-			type: String,
+			type: String
 		},
 		img: {
 			type: Object,
@@ -80,28 +80,28 @@ const UserSchema = new mongoose.Schema({
 			default: 0
 		},
 		info: {
-			type: String,
+			type: String
 		},
 		content: {
-			type: String,
+			type: String
 		},
 		description: {
-			type: String,
+			type: String
 		},
 		phone: [{
 			type: String,
 			validate: [ /^[0-9+]{10,}$/, `Invalid phone number`],
 			required: 'Phone number is required',
-			trim: true,
+			trim: true
 		}],
 		workingTime: {
-			type: String,
+			type: String
 		},
 		place: {
-			type: String,
+			type: String
 		},
 		address: {
-			type: String,
+			type: String
 		},
 		ways: {
 			type: String,
@@ -221,9 +221,9 @@ const UserSchema = new mongoose.Schema({
 				count: {
 					type: String,
 					default: null
-				},
-			},
-		}],
+				}
+			}
+		}]
 	},
 	gallery: {
 		link: {
@@ -238,8 +238,8 @@ const UserSchema = new mongoose.Schema({
 			text: {
 				type: String,
 				default: null
-			},
-		}],
+			}
+		}]
 	},
 	trophies: {
 		type: Object,
@@ -252,7 +252,7 @@ const UserSchema = new mongoose.Schema({
 	teachers: [{
 		teacherName: {
 			type: String,
-			default: null,
+			default: null
 		},
 		teacherCourses: [{
 			type: String,
@@ -289,7 +289,7 @@ const UserSchema = new mongoose.Schema({
 				type: Number,
 				default: 0
 			}
-		}],
+		}]
 	}],
 	uniqueID: {
 		type: Number
@@ -342,7 +342,7 @@ UserSchema.statics.createFields = [
 
 UserSchema.statics.createFieldsForStudent = [
 						'name', 'firstName', 'lastName','email', 'password', 'role', 
-									'saves', 'active', 'phone', 'img',
+									'saves', 'active', 'phone', 'img'
 					];
 // UserSchema.virtual('payment', {
 // 	ref: 'payment',

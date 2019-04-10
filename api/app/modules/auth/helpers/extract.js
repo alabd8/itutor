@@ -15,12 +15,12 @@ export default async (ctx) => {
                 ...pick(body, User.createFields),
                 img: await setParamsForImage(ctx),
                 uniqueID: await uuidGenerator(),
-                params: { amount: 500000 },
+                params: { amount: 500000 }
             }
 		}else{
             userData = {
                 ...pick(body, User.createFieldsForStudent),
-                img: await setParamsForImage(ctx),
+                img: await setParamsForImage(ctx)
             }
         }
     

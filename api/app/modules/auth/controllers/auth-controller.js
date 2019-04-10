@@ -91,7 +91,7 @@ export default {
 	async updateStudent(ctx){
 		const {
 			request: {
-				body,
+				body
 			},
 			state: {
 				user: {

@@ -43,5 +43,5 @@ errLog.error('ERROR LOG STARTED');
 export {
     infoLog,
     debLog,
-    errLog,
+    errLog
 };

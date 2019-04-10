@@ -3,5 +3,5 @@ import Payment from './payment';
 
 export {
 	User,
-	Payment,
+	Payment
 };

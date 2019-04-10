@@ -18,7 +18,7 @@ export default {
 		}
 	},
 	async updateOne(id, data){
-		return User.updateOne({ "page.course._id": id }, { $set: { "page.course.$": data }}, { upsert: true });
+		return User.updateOne({ "page.course._id": id }, { $set: { "page.course.$": data } }, { upsert: true });
 	},
 	async pull(id, courseId){
 		return User.findByIdAndUpdate(id, { $pull: { 'page.course': { 	_id: courseId } } }, { 'new': true });
@@ -40,7 +40,7 @@ export default {
 		return User.count();
 	},
 	async countOne(params){
-		return User.find(params).count().select({ createdAt: 0, password: 0, _id: 0, __v: 0, });
+		return User.find(params).count().select({ createdAt: 0, password: 0, _id: 0, __v: 0 });
 	},
 	async getRecommended(params){
 		return User.find(params).select({ createdAt: 0, updatedAt: 0, password: 0, _id: 0, __v: 0 });

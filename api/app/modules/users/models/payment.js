@@ -6,7 +6,7 @@ mongoose.plugin(uniqueValidator);
 
 const PaymentSchema = new mongoose.Schema({
 	userHash: {
-		type: String,
+		type: String
 	},
 	hash: {
 		type: String,
@@ -19,7 +19,7 @@ const PaymentSchema = new mongoose.Schema({
 		},
 		amount: {
 			type: Number,
-			default: 0,
+			default: 0
 		},
 		account: {
 			itutor: {
@@ -37,7 +37,7 @@ const PaymentSchema = new mongoose.Schema({
 		},
 		state: {
 			type: Number,
-			default: 0,
+			default: 0
 		},
 		transaction: {
 			type: String,
@@ -54,7 +54,7 @@ const PaymentSchema = new mongoose.Schema({
 		reason: {
 			type: Number,	
 			default: null
-		},
+		}
 	},
 	mock_amount: {
 		type: Number,
@@ -66,7 +66,7 @@ const PaymentSchema = new mongoose.Schema({
 	},
 	time_out: {
 		type: Number,
-		default: null,
+		default: null
 	},
 	payment_time: {
 		type: Number,
@@ -76,10 +76,10 @@ const PaymentSchema = new mongoose.Schema({
 		type: Number,
 		default: 0
 	},
-	payment_id: {
+	payment_id: [{
 		type: String,
 		default: null
-	},
+	}],
 	expires30d: {
 		type: Number,
 		default: null
@@ -87,7 +87,7 @@ const PaymentSchema = new mongoose.Schema({
 	id: {
 		type: String,
 		default: null
-	},
+	}
 }, { 
     timestamps: true
 });

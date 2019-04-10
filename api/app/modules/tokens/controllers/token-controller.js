@@ -1,4 +1,3 @@
-import { User } from '../../users';
 import { UserService } from '../../users/services';
 import issueTokenPair from '../../../helpers/issueTokenPair'; 
 import { TokenService } from '../services';
@@ -32,5 +31,5 @@ export default {
         await UserService.updateUser({ status: 0 }, ctx.state.user);
 
         ctx.body = { success: true };
-    },
+    }
 }

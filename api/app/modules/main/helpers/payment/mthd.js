@@ -1,5 +1,6 @@
 import { SUM, timestamp } from '../../constants';
 import { UserService, PaymentService } from '../../../users/services';
+import paymentService from '../../../users/services/payment-service';
 
 function c(ctx, obj) {
     ctx.status = 200;
@@ -11,7 +12,13 @@ function c(ctx, obj) {
 async function cycle(data){
     let payment;
     if(data.payment_id){
-        payment = await PaymentService.findOne({ payment_id: data.payment_id });
+        let payments = await PaymentService.find();
+        for(let i = 0; i < payments.length; i++){
+            for(let j = 0; j < payments.payment_id.length; j++){
+                if(payments[i].payment_id[j] == data.payment_id)
+                    payment = payments[i];
+            }
+        }
         return payment;
     }
     if(data.id){
@@ -32,16 +39,25 @@ async function create_transaction(ctx, transaction) {
     const { request: { body } } = ctx;
     ctx.state.payment = null;    
     try {
-        if (transaction.payment_id == body.params.id && transaction.params.create_time) {
-            const payment = await PaymentService
-                .updatePayment({
-                    params: { 
-                        state: 1, create_time: transaction.params.create_time,
-                        time: transaction.params.time
-                    },
-                    payment_id: transaction.payment_id, mock_amount: body.params.amount,
-
-                }, transaction);
+        const isEqual = (element) => { return body.params.id == element}
+        if (transaction.params.create_time && transaction.payment_id.some(isEqual)) {
+            const pay = transaction.params;
+            return c(ctx, {
+                id: body.id,
+                result: {
+                    create_time: pay.create_time,
+                    state: pay.state,
+                    transaction: `${pay.transaction}`
+                }
+            });
+        }
+        const isNotEqual = (element) => { return element != body.params.id }
+        if(transaction.params.create_time && transaction.payment_id.every(isNotEqual)){
+            let payment = await PaymentService
+                .updatePayment({ params: { create_time: timestamp() }, 
+                    mock_amount: body.params.amount }, transaction);
+            payment = await PaymentService
+                    .push({ _id: transaction._id }, { payment_id: body.params.id });
             const pay = payment.params;
             return c(ctx, {
                 id: body.id,
@@ -50,26 +66,9 @@ async function create_transaction(ctx, transaction) {
                     state: pay.state,
                     transaction: `${pay.transaction}`
                 }
-            }); 
-        }
-        if(transaction.params.create_time && transaction.payment_id != body.params.id){
-            const payment = await PaymentService
-                .updatePayment({
-                    params: { state: 1, time: body.params.time, 
-                              create_time: transaction.params.create_time,
-                    },mock_amount: body.params.amount
-                }, transaction);
-            const pay = payment.params;
-            return c(ctx, {
-                id: body.id,
-                result: {
-                    create_time: timestamp(),
-                    state: pay.state,
-                    transaction: `${pay.transaction}`
-                }
             });
         }
-            const payment = await PaymentService
+        const payment = await PaymentService
             .updatePayment({
                 params: { state: 1, create_time: timestamp(), time: body.params.time },
                 payment_id: body.params.id, mock_amount: body.params.amount
@@ -84,6 +83,7 @@ async function create_transaction(ctx, transaction) {
             }
         });
     } catch (e) {
+        console.log("MESSAGE: ", e);
         ctx.status = 200;
         ctx.body = {
             id: body.id, result: null,
@@ -91,7 +91,6 @@ async function create_transaction(ctx, transaction) {
         };
     }
 };
-
 export default {
     async checkPerformTransaction(ctx, body) {
         const itutor = Number(body.params.account.itutor);
@@ -99,6 +98,7 @@ export default {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
+
         if (body.params.amount < SUM) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31001, message: "Incorrect amount." }
@@ -106,27 +106,19 @@ export default {
 
         let user = await UserService
             .findOneAndUpdate({ uniqueID: body.params.account.itutor }, { pay_state: 1 });
+
         if(!user) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
         });
-        
-        let payment = await PaymentService.find({ userHash: user.hash, 
-                                                  id: user.uniqueID });
-        if(payment.length > 0){
-            for(let i = 0; i < payment.length; i++){
-                if(payment[i]){
-                    if(payment[i].params.state == 1){
-                        ctx.state.payment = payment[i];
-                        return c(ctx, { id: body.id, result: { "allow": true } });
-                    }
-                }
-            }	
+        let payment = await cycle({ id: user.uniqueID });
+        if(payment){
+            ctx.state.payment = payment;
+            return c(ctx, { id: body.id, result: { "allow": true } });
         }
         await PaymentService.createPayment({ userHash: user.hash, id: user.uniqueID,  
-                                             params: { state: user.pay_state } });
+                                            params: { state: user.pay_state } });
         return c(ctx, { id: body.id, result: { "allow": true } });
-
     },
 
     async createTransaction(ctx, body) {
@@ -148,6 +140,7 @@ export default {
         });
 
         let payment = await cycle({ user, itutor });
+        console.log("PAYMENT : ", payment);
         if(!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }
@@ -169,7 +162,7 @@ export default {
             if (!bool) {
                 await PaymentService.updatePayment({
                     params: {
-                        state: -1, reason: 4,
+                        state: -1, reason: 4
                     },
                     payment_id: body.params.id
                 }, payment);
@@ -211,8 +204,8 @@ export default {
                 return c(ctx, {
                     id: body.id,
                     result: { state, perform_time: 
-                              payment.params.perform_time, 
-                              transaction: payment.params.transaction 
+                            payment.params.perform_time, 
+                            transaction: payment.params.transaction 
                     }
                 });    
             }

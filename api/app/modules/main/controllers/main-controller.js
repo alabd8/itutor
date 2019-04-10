@@ -24,7 +24,7 @@ export default {
 	async home(ctx){
 		const {
 			state: {
-				user,
+				user
 			},
 			request: {
 				body: {
@@ -99,7 +99,7 @@ export default {
 	async check(ctx){
 		const {
 			state: {
-				user,
+				user
 			}
 		} = ctx;
 

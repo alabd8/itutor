@@ -25,7 +25,10 @@ export default {
 	async findOne(params){
 		return Payment.findOne(params).select({ createdAt: 0, hash: 0, __v: 0 });
 	},
+	async push(id, data){
+		return Payment.findByIdAndUpdate(id, { $push: data }, { 'new': true });
+	},
 	async count(){
 		return Payment.count();
-	},
+	}
 };

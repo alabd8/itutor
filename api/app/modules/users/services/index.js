@@ -3,5 +3,5 @@ import PaymentService from './payment-service';
 
 export {
 	UserService,
-	PaymentService,
+	PaymentService
 };

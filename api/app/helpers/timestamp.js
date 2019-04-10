@@ -27,7 +27,7 @@ export default async (user, dbModel) => {
         }
     }
 
-    dbModel.update({ _id: user._id }, { $set: { params: { amount: 0 }}}, { upsert: true }, function(err, doc){
+    dbModel.update({ _id: user._id }, { $set: { params: { amount: 0 } } }, { upsert: true }, function(err, doc){
         if (err) return debLog.debug("error: ", err );
         return infoLog.info("succesfully saved");
     });

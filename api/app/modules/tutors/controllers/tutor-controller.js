@@ -176,7 +176,7 @@ export default {
 		try{
 			const result = await UserService.findOne({ hash: tutor.hash });
 
-			await setCtx(ctx, [{ "Instance User is ": user}, 
+			await setCtx(ctx, [{ "Instance User is ": user }, 
 							   { "Instance Tutor is ": result }, 
 							   { "Tutor Courses": result.page.course }]);	
 		}catch(ex){

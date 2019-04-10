@@ -48,7 +48,7 @@ test('User receives 401 on expired token', async t => {
 
 test('User can get new access token using refresh token', async t => {
     const res = await app.post('/refresh').send({
-        refreshToken: '8fe774ae-558c-4de6-8eb1-e5165d18e88f5c37230168339010b6136965',
+        refreshToken: '8fe774ae-558c-4de6-8eb1-e5165d18e88f5c37230168339010b6136965'
     });
     t.is(res.status, 200);
     t.truthy(typeof res.body.token === 'string');
