@@ -12,14 +12,7 @@ function c(ctx, obj) {
 async function cycle(data){
     let payment;
     if(data.payment_id){
-        let payments = await PaymentService.find();
-        for(let i = 0; i < payments.length; i++){
-            for(let j = 0; j < payments.payment_id.length; j++){
-                if(payments[i].payment_id[j] == data.payment_id)
-                    payment = payments[i];
-            }
-        }
-        return payment;
+        return payment = await PaymentService.findOne({ payment_id: data.payment_id });
     }
     if(data.id){
         let payments = await PaymentService.find({ id: data.id });
@@ -83,7 +76,6 @@ async function create_transaction(ctx, transaction) {
             }
         });
     } catch (e) {
-        console.log("MESSAGE: ", e);
         ctx.status = 200;
         ctx.body = {
             id: body.id, result: null,
