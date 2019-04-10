@@ -4,7 +4,6 @@ import { infoLog, debLog } from '../../../utils/logs/logger';
 import calAndFind from '../helpers/calAndFind';
 import searchTags from '../helpers/searchTags';
 import payment from '../helpers/payment';
-import validator from '../helpers/validator';
 
 export default {
 	async main(ctx){
@@ -95,27 +94,6 @@ export default {
 
 		infoLog.info('Response to - /menu: ', ctx.body);
 
-	},
-
-	async payment(ctx){
-		const {
-			state: { 
-				user: { hash },
-				person,
-			},
-			request: {
-				body: {
-					data,
-				}
-			}
-		} = ctx;
-
-		if(hash != person.hash)	ctx.throw(403, `Forbidden. User hash with ${hash} 
-								  does not belong to user with hash ${person.hash}`);
-								  	
-		if(!data.pay_state) ctx.throw(400, 'Invalid credentials');
-
-		await validator(ctx, data, person);
 	},
 
 	async check(ctx){

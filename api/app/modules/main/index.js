@@ -14,7 +14,6 @@ router
 	.post('/home/results', mainController.search)
 	.post('/search', mainController.home)
 	.post('/menu', mainController.menu)
-	.post('/payment/:hash', checkUser(), mainController.payment)
 	.post('/aliveoprstate/checkTrack', mainController.check);
 
 export default router.routes();
