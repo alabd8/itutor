@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form id="tForm">
+        <input name="name" placeholder="name"/>
+        <input name="firstName" placeholder="firstName"/>
+        <input name="lastName" placeholder="lastName"/>
+        <input name="role" placeholder="role"/>
+        <input name="email" placeholder="email"/>
+        <input name="password" placeholder="password"/>
+        <input type="file" name="file" placeholder="file"/>
+        <input type="submit" />
+    </form>
+</body>
+<script>
+    tForm.onsubmit = function(){
+        let object = {
+            name: tForm.name.value, 
+            lastName: tForm.lastName.value,
+            firstName: tForm.firstName.value,
+            role: tForm.role.value,
+            password: tForm.password.value,
+            email: tForm.email.value,
+            file: tForm.file.value
+        }
+        let formData = new FormData(tForm.name.value);
+        let xml = new XMLHttpRequest();
+
+        xml.open('POST', 'http://localhost:8080/manu/auth/signup', true);
+
+        xml.onload = function(){
+            let object =JSON.parse(this.responseText);
+
+            console.log(object);
+        }
+        xml.send(formData);
+        
+        return false;
+    }
+</script>
+</html>

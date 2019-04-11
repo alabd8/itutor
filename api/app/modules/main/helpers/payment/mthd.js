@@ -132,7 +132,6 @@ export default {
         });
 
         let payment = await cycle({ user, itutor });
-        console.log("PAYMENT : ", payment);
         if(!payment) return c(ctx, {
             id: body.id,
             result: null, error: { code: -31050, message: "Login not found." }

@@ -16,9 +16,9 @@ import { UserService } from '../../users/services';
 export default {
 	async signup(ctx){
 		await checkEnumValues(ctx);
-		// console.log("AAAAAAAAAAAAAAAAA: , ", ctx.request.body.img);
+		console.log("AAAAAAAAAAAAAAAAA: , ", ctx.request.body.img);
 		const userData = await extract(ctx);
-		// console.log(userData.img);
+		console.log(userData.img);
 		infoLog.info('Request to - /menu/auth/signup/student: ', ctx);
 
 		const { _id } = await UserService.createUser(userData);

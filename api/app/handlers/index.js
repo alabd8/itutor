@@ -1,6 +1,5 @@
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
-import serve from 'koa-static';
 import logger from 'koa-logger';
 import error from './error';
 import jwt from './jwt';
@@ -22,7 +21,6 @@ export default (app) => {
 	    multipart: true,
 	    urlencoded: true
 	}));
-	app.use(serve('../../images'));
 	app.use(bodyParser());
 	app.use(jwt());
 	app.use(checkAmount());
