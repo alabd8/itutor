@@ -4,7 +4,6 @@ import initHandlers from './handlers';
 import modules from './modules';
 import AppError from './helpers/appError';
 
-
 connectorsInit();
 global.AppError = AppError;
 
@@ -15,7 +14,8 @@ initHandlers(app);
 app.use(modules);
 
 app.use(async (ctx) => {
-	ctx.body = '<h1>Welcome to itutor</h1>';		
+    ctx.status = 404;
+    ctx.body = { message: 'Page not found' };
 });
 
 export default app;
