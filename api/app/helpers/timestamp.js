@@ -1,36 +1,17 @@
-import pick from 'lodash/pick';
-
 import { debLog, infoLog } from '../utils/logs/logger';
-import { UserService } from '../modules/users/services';
-import { PaymentService } from '../modules/users/services';
-import { Payment } from '../modules/users';
+import { timestamp } from '../modules/main/constants';
+import { User } from '../modules/users';
 
-export default async (user, dbModel) => {
-    const date = Date.now();
+export default async (user) => {
+    const date = timestamp();
     
-    if(user.time_end >= date){
-        let payment = await PaymentService.getPaymentWithPublicFields({ userHash: user.hash });
-        
-        console.log("PAYMENT------ 1: ", payment);
-        if(!payment){
-
-            console.log("PAYMENT------ 2: ");
-
-            payment = {
-                ...pick(user, Payment.createFields),
-                userHash: user.hash 
+    if(user.time_end <= date){
+        User.update({ _id: user._id }, { $set: { params: { amount: 0 } } }, { upsert: true }, 
+            function(err){
+                if (err) return debLog.debug("error: ", err );
+                return infoLog.info("succesfully saved");
             }
-
-            console.log("PAYMENT------ 3: ", payment);
-
-            return await PaymentService.createPayment(payment);
-        }
+        );
     }
-
-    dbModel.update({ _id: user._id }, { $set: { params: { amount: 0 } } }, { upsert: true }, function(err, doc){
-        if (err) return debLog.debug("error: ", err );
-        return infoLog.info("succesfully saved");
-    });
-
-    return
+    return;
 }   

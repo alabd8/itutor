@@ -33,7 +33,6 @@ export default {
 		await setCtx(ctx, { data: result });
 
 		infoLog.info('Response to - /menu/teachers/:hash: ', ctx.body);
-
 	},
 
 	async update(ctx){
@@ -64,7 +63,6 @@ export default {
 		await setCtx(ctx, { data: updatedTutor });
 
 		infoLog.info('Response to - /menu/teachers/:hash/:id: ', ctx.body);
-
 	},
 
 	async updateTutor(ctx){
@@ -99,7 +97,6 @@ export default {
 		await updatingUser(img, newData, tutor, ctx);
 
 		infoLog.info('Response to - /menu/:hash/contacts & /menu/:hash/settings: ', ctx.body);
-		
 	},
 
 	async create(ctx){
@@ -128,7 +125,6 @@ export default {
 		ctx.body = { data: result };
 
 		infoLog.info('Response to - /menu/teachers/:hash/new-course: ', ctx.body);
-
 	},
 
 	async delete(ctx){
@@ -155,7 +151,6 @@ export default {
 		ctx.body = { data: updatedTutor };
 
 		infoLog.info('Response to delete - /menu/teachers/:hash/:id: ', ctx.body);
-
 	},
 
 	async showCourses(ctx){
@@ -184,7 +179,6 @@ export default {
 		}
 
 		infoLog.info('Response to - /tutors/:hash/courses: ', ctx.body);
-
 	},
 
 	async showCourse(ctx){
@@ -223,7 +217,6 @@ export default {
 		}
 
 		infoLog.info('Response to - /tutors/:hash/courses/:id: ', ctx.body);
-
 	},
 
 	async gallery(ctx){
@@ -252,7 +245,6 @@ export default {
 		}
 
 		infoLog.info('Response to - /tutors/:hash/gallery: ', ctx.body);
-
 	},
 
 	async deleteTutor(ctx){
@@ -278,7 +270,6 @@ export default {
 		await setCtx(ctx, { hash: tutor.hash });
 
 		infoLog.info('Response to delete - /tutor/:hash: ', ctx.body);
-
 	}
 };
 

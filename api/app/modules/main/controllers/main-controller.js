@@ -18,13 +18,12 @@ export default {
 		await payment(ctx, body);
 
 		infoLog.info('Response to - /: ', ctx.body);
-
 	},
 
 	async home(ctx){
 		const {
-			state: {
-				user
+			state: { 
+				user 
 			},
 			request: {
 				body: {
@@ -38,13 +37,12 @@ export default {
 		await search(ctx, user, data);
 
 		infoLog.info('Response to - /home & /search: ', ctx.body);
-
 	},
 
 	async selected(ctx){
 		const {
-			state: {
-				user
+			state: { 
+				user 
 			},
 			request: {
 				body: {
@@ -58,7 +56,6 @@ export default {
 		await searchTags(ctx, user, data);
 
 		infoLog.info('Response to - /home/select: ', ctx.body);
-
 	},
 
 	async search(ctx){
@@ -78,7 +75,6 @@ export default {
 		await filter(ctx, user, result, body);
 
 		infoLog.info('Response to - /home/results: ', ctx.body);
-
 	},
 
 	async menu(ctx){
@@ -93,7 +89,6 @@ export default {
 		ctx.body = { user };
 
 		infoLog.info('Response to - /menu: ', ctx.body);
-
 	},
 
 	async check(ctx){

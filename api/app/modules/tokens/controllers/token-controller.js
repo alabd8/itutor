@@ -8,14 +8,14 @@ export default {
 
         const dbToken = await TokenService.findToken({ token: refreshToken });
         if(!dbToken){
-            return;
+            return ctx.throw(400, 'Refresh token not found');
         }   
         const user = await UserService.findOne({ email: dbToken.email });
         await TokenService.removeToken({
             token: `${refreshToken}`
         });
 
-        ctx.body = await issueTokenPair(dbToken.email, user._id);
+        ctx.body = await issueTokenPair(dbToken.email, user);
     },
 
     async logout(ctx){
@@ -26,9 +26,12 @@ export default {
                 }
             }
         } = ctx;
-
+        
+        if(!email){
+            return ctx.throw(400, 'You are not authorized');
+        }
         await TokenService.removeTokens({ email });
-        await UserService.updateUser({ status: 0 }, ctx.state.user);
+        await UserService.findOneAndUpdate({ email }, { status: 0 });
 
         ctx.body = { success: true };
     }

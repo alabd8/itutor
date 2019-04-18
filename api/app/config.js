@@ -16,6 +16,8 @@ if(!envs[env]){
 const PORT = process.env.PORT || config.get('port');
 const MONGO_URI = process.env.MONGO_URI || config.get('mongo.uri');
 const JWT_SECRET = config.get('jwt.secret');
+const LOGIN = config.get('paycom.login');
+const PW = config.get('paycom.pw');
 
 if(!JWT_SECRET){
 	errLog.error(`You must pass jwt secret string`);
@@ -25,6 +27,7 @@ if(!JWT_SECRET){
 export {
 	PORT,	
 	MONGO_URI,
-	JWT_SECRET
+	JWT_SECRET,
+	LOGIN, PW
 };
 

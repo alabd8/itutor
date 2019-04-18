@@ -1,6 +1,5 @@
 import { SUM, timestamp } from '../../constants';
 import { UserService, PaymentService } from '../../../users/services';
-import paymentService from '../../../users/services/payment-service';
 
 function c(ctx, obj) {
     ctx.status = 200;

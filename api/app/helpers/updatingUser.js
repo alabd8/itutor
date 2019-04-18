@@ -8,12 +8,12 @@ export default async (img, newData, user, ctx) => {
         const updatedUser = await UserService.updateUser(newData, user);
         await TokenService.removeTokens({ email: updatedUser.email });
         ctx.body = { data: updatedUser,
-                     tokens: await issueTokenPair(updatedUser.email, updatedUser._id) };
+                     tokens: await issueTokenPair(updatedUser.email, updatedUser) };
     }else{
         newData.img = img;
         const updatedUser = await UserService.updateUser(newData, user);
         await TokenService.removeTokens({ email: updatedUser.email });				
         ctx.body = { data: updatedUser, 
-                     tokens: await issueTokenPair(updatedUser.email, updatedUser._id) };
+                     tokens: await issueTokenPair(updatedUser.email, updatedUser) };
     }
 }

@@ -2,7 +2,6 @@ export default async function setParamsForImage(ctx){
 	if(!ctx.request.files || !ctx.request.files.img){
 		return false;
 	}
-
 	const file = ctx.request.files.img;
 
 	if(file.type === 'image/jpeg' || file.type === 'image/png'){

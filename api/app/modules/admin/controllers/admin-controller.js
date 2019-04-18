@@ -53,7 +53,7 @@ export default {
 			try{
 				moderator = await UserService.createUser(newModerator);
 			}catch(e){
-				ctx.throw(400, { message: e });
+				ctx.throw(400, 'Error on creating a moderator');
 			}		
 		}
 
@@ -78,7 +78,7 @@ export default {
 			ctx.throw(403, `Forbidden`);
 		}
 
-		const users = await searchUser(data, role);
+		const users = await searchUser(data);
 		await setCtx(ctx, { users });
 
 		infoLog.info('Response to - /admin/getusers: ', ctx.body);

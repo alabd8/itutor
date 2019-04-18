@@ -15,7 +15,7 @@ function iterate(arr){
     return all;
 }
 
-export default async (data, role) => {
+export default async (data) => {
     if(data === 'getCenters'){
         const lcs = await UserService.find({ role: 'center' });
         

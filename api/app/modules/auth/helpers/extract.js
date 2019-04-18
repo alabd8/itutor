@@ -1,9 +1,9 @@
 import pick from 'lodash/pick';
 
 import setParamsForImage from '../../../helpers/setParamsForImage';
-import uuidGenerator from '../../../helpers/uuidGenerator';
 
 import { User } from '../../users';
+import { uuidGenerator } from '../../main/constants';
 
 export default async (ctx) => {
     const body = ctx.request.body;
@@ -14,7 +14,7 @@ export default async (ctx) => {
 			userData = { 
                 ...pick(body, User.createFields),
                 img: await setParamsForImage(ctx),
-                uniqueID: await uuidGenerator(),
+                uniqueID: uuidGenerator(),
                 params: { amount: 500000 }
             }
 		}else{

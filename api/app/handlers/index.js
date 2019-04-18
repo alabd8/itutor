@@ -3,7 +3,7 @@ import cors from '@koa/cors';
 import logger from 'koa-logger';
 import error from './error';
 import jwt from './jwt';
-import checkAmount from './checkAmount';
+import checkTimestamp from './checkTimestamp';
 import { IS_DEV } from '../utils/env';
 
 export default (app) => {
@@ -23,5 +23,5 @@ export default (app) => {
 	}));
 	app.use(bodyParser());
 	app.use(jwt());
-	app.use(checkAmount());
+	app.use(checkTimestamp());
 }

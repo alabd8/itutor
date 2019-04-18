@@ -1,7 +1,6 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-
-import { pw, login } from "../constants";
+import { LOGIN, PW } from '../../../config';
 
 export default () => async (ctx, next) => {
 	const { authorization } = ctx.headers;
@@ -13,7 +12,7 @@ export default () => async (ctx, next) => {
 
 			const encoded2 = text.split(':');
 
-			if(login === encoded2[0] && pw === encoded2[1]){
+			if(LOGIN === encoded2[0] && PW === encoded2[1]){
 				return await next();
 			}
 		}else{

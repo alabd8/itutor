@@ -1,6 +1,4 @@
 import pick from 'lodash/pick';
-
-// import getTagsFromCotegories from '../helpers/getTagsFromCotegories';
 import { infoLog } from '../../../utils/logs/logger';
 import setCtx from '../../../helpers/setCtx';
 import setParamsForImage from '../../../helpers/setParamsForImage';
@@ -27,7 +25,7 @@ export default {
 			ctx.throw(403, 'Error on verifying');
 		}
 
-		await UserService.updateUser({ verified: true }, lc);
+		await UserService.updateUser({ verified: true, code: null }, lc);
 
 		ctx.body = { message: 'verified' };
 
@@ -52,9 +50,8 @@ export default {
 							doesn't belong to user with hash "${hash}"`);
 		}
 
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}
+		if(lc.verified != 1) return ctx.throw(400, `Please verify your unique code`);
+
 		const result = await UserService.findOne({ hash: lc.hash });
 
 		await setCtx(ctx, { data: result });
@@ -64,9 +61,7 @@ export default {
 
 	async update(ctx){
 		const {
-			request: {     
-				body
-			},
+			request: { body },
 			state: {
 				user: {
 					role,
@@ -80,14 +75,11 @@ export default {
 		infoLog.info('Request to - /menu/courses/:hash/:id: ', ctx);
 
 		if(lc.hash != hash || role != 'center'){
-			ctx.throw(403, 
-				`Forbidden. Learning Centre with hash "${lc.hash}"
-			 	doesn't belong to user with hash "${hash}"`);
+			ctx.throw(403, `Forbidden. Learning Centre with hash "${lc.hash}"
+			 				doesn't belong to user with hash "${hash}"`);
 		}
-
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}
+		if(lc.verified != 1) return ctx.throw(400, `Please verify your unique code`);
+		
 		await UserService.updateOne(id, body);
 		const updatedLC = await UserService.findOne({ _id: lc._id });
 
@@ -117,14 +109,13 @@ export default {
 							doesn't belong to user with hash "${hash}"`);
 		}
 
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}		
+		if(lc.verified != 1) ctx.throw(400, `Please verify your unique code`);	
+		
 		const newData = pick(body, User.createFields);
 
-		if(newData.role !== 'center'){
+		if(newData.role !== 'center')
 			throw new AppError({ status: 400, message: `Error on updating "role"` });			
-		}
+		
 		let img = await setParamsForImage(ctx);			  
 
 		await updatingUser(img, newData, lc, ctx);
@@ -134,16 +125,16 @@ export default {
 
 	async create(ctx){
 		const {
+			request: { body },
 			state: {
 				user: {
 					role,
 					hash
 				},
 				lc
-			},
-			request: { body }
+			}
 		} = ctx;
-
+		
 		infoLog.info('Request to - /menu/courses/:hash/new-course: ', ctx);
 
 		if(lc.hash != hash || role != 'center'){
@@ -151,9 +142,7 @@ export default {
 							 doesn't belong to user with hash "${hash}"`);
 		}
 
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}
+		if(lc.verified != 1) ctx.throw(400, `Please verify your unique code`);
 
 		const result = await UserService.push(lc._id, body);
 
@@ -166,8 +155,7 @@ export default {
 	async showCourses(ctx){
 		const {
 			state: {
-				user,
-				lc
+				user, lc
 			},
 			request: {
 				body: {
@@ -175,6 +163,7 @@ export default {
 				}
 			}
 		} = ctx;
+
 		infoLog.info('Request to - /centers/:hash/courses: ', ctx);
 
 		try{
@@ -188,15 +177,14 @@ export default {
 				message: `Error. Can not get courses` 
 			});	
 		}
+
 		infoLog.info('Response to - /centers/:hash/courses: ', ctx.body);
 	},
 
 	async showCourse(ctx){
 		const {
 			state: {
-				user,
-				lc,
-				id
+				user, lc, id
 			},
 			request: {
 				body: {
@@ -204,7 +192,7 @@ export default {
 				}
 			}
 		} = ctx;
-		
+
 		infoLog.info('Request to - /centers/:hash/courses/:id: ', ctx);
 
 		try{
@@ -229,14 +217,12 @@ export default {
 		}
 
 		infoLog.info('Response to - /centers/:hash/courses/:id: ', ctx.body);
-		
 	},
 
 	async teachers(ctx){
 		const {
 			state: {
-				user,
-				lc
+				user, lc
 			},
 			request: {
 				body: {
@@ -260,15 +246,12 @@ export default {
 		}
 
 		infoLog.info('Response to - /centers/:hash/teachers: ', ctx.body);
-
 	},
 
 	async teacher(ctx){
 		const {
 			state: {
-				user,
-				lc,
-				id
+				user, lc, id
 			},
 			request: {
 				body: {
@@ -301,14 +284,12 @@ export default {
 		}
 
 		infoLog.info('Response to - /centers/:hash/teachers/:id: ', ctx.body);
-
 	},
 
 	async gallery(ctx){
 		const {
 			state: {
-				user,
-				lc
+				user, lc
 			},
 			request: {
 				body: {
@@ -332,7 +313,6 @@ export default {
 		}
 
 		infoLog.info('Response to - /centers/:hash/gallery: ', ctx.body);
-
 	},
 
 	async delete(ctx){
@@ -342,8 +322,7 @@ export default {
 					hash,
 					role
 				},
-				lc,
-				id
+				lc, id
 			}
 		} = ctx;
 
@@ -354,15 +333,13 @@ export default {
 							doesn't belong to user with hash "${hash}"`);
 		}
 		
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}
+		if(lc.verified != 1) ctx.throw(400, `Please verify your unique code`);
+		
 		const updatedLC = await UserService.pull(lc._id, id);
 
 		ctx.body = { data: updatedLC };
 
 		infoLog.info('Response to delete - /menu/courses/:hash/:id: ', ctx.body);
-
 	},
 
 	async deleteLC(ctx){
@@ -383,14 +360,12 @@ export default {
 							does not belong to user with hash ${hash}`);
 		}
 
-		if(lc.verified != 1){
-			ctx.throw(400, `Please verify your unique code`);
-		}
+		if(lc.verified != 1) ctx.throw(400, `Please verify your unique code`); 
+		
 		await lc.remove();
 
 		await setCtx(ctx, { hash: lc.hash });
 
 		infoLog.info('Response to delete - /tutor/:hash: ', ctx.body);
-
 	}
 }

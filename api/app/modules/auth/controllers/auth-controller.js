@@ -1,5 +1,4 @@
 import pick from 'lodash/pick';
-import fs from 'fs';
 import { infoLog } from '../../../utils/logs/logger';
 
 import checkEnumValues from '../../../helpers/checkEnumValues';
@@ -15,11 +14,10 @@ import { UserService } from '../../users/services';
 
 export default {
 	async signup(ctx){
-		await checkEnumValues(ctx);
-		console.log("AAAAAAAAAAAAAAAAA: , ", ctx.request.body.img);
-		const userData = await extract(ctx);
-		console.log(userData.img);
 		infoLog.info('Request to - /menu/auth/signup/student: ', ctx);
+
+		await checkEnumValues(ctx);
+		const userData = await extract(ctx);
 
 		const { _id } = await UserService.createUser(userData);
 		const user = await UserService.getUserWithPublicFields({ _id });
@@ -30,23 +28,11 @@ export default {
 	}, 
 
 	async login(ctx){
-		const { email, password } = ctx.request.body;
-
-		const credentials = await UserService.findOne({ email });
-		if(!credentials){
-			ctx.throw(400, { message: `User not found` });
-		}
-		
-		const { _id } = await UserService.updateUser({ state: 1 }, credentials);
-		const user = await User.findOne({ _id });
-		// fs.readFile(`../../../../images/${user.img.fileName}`, function (err, data) {
-		// 	if (err) throw err;
-		// 	console.log(data);
-		// });
-		
-
 		infoLog.info('Request to - /menu/auth/signin: ', ctx);
 
+		const { email, password } = ctx.request.body;
+
+		const user = await UserService.findOneAndUpdate({ email }, { state: 1 });
 		if(!user){
 			ctx.throw(403, { 
 				message: 'User not found' 
@@ -57,9 +43,8 @@ export default {
 			ctx.throw(403, { 
 				message: 'Invalid password' 
 			});
-		}		
-		
-		ctx.body = await issueTokenPair(email, user._id);
+		}				
+		ctx.body = await issueTokenPair(email, user);
 
 		infoLog.info('Response to - /menu/auth/signin: ', ctx.body);
 	},
@@ -78,7 +63,8 @@ export default {
 		infoLog.info('Request to current - /user: ', ctx);
 
 		if(student.hash != hash || role != 'student'){
-			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
+			ctx.throw(403, `Forbidden. Student with hash "${student.hash}" 
+							does not belong to user with hash "${hash}"`);
 		}
 
 		const result = await UserService.findOne({ hash: student.hash });
@@ -90,9 +76,7 @@ export default {
 
 	async updateStudent(ctx){
 		const {
-			request: {
-				body
-			},
+			request: { body },
 			state: {
 				user: {
 					role,
@@ -135,7 +119,8 @@ export default {
 		infoLog.info('Request to delete - /user: ', ctx);
 
 		if(student.hash != hash || role != 'student'){
-			ctx.throw(403, `Forbidden. Student with hash ${student.hash} does not belong to user with hash ${hash}`);
+			ctx.throw(403, `Forbidden. Student with hash "${student.hash}" 
+							does not belong to user with hash "${hash}"`);
 		}
 
 		await student.remove();

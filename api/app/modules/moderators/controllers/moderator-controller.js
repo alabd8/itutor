@@ -57,10 +57,15 @@ export default {
         }
 
         const center = await UserService.findOne({ email: data });
+        
+        if(!center){
+            return ctx.throw(400, 'Center not found');
+        }
 
         if(center.role !== 'center'){
             ctx.throw(400, 'Error. Getting not center');
         }
+        
         ctx.body = { data: center };
     }
 }

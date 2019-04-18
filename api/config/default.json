@@ -2,5 +2,11 @@
 	"port": 8080,
 	"jwt": {
 		"secret": "vds290df4357ty82asdwedesgfw434tgvxcwe"
+	},
+	"paycom": {
+		"login": "Paycom",
+		"pw": "EX@jfzUrbm7BQWA3Bh9i??AGt8wqfixtHaQA",
+		"ip1": "195.158.31.134",
+		"ip2": "195.158.31.10"
 	}
 }
