@@ -14,7 +14,7 @@ initHandlers(app);
 app.use(modules);
 
 app.use(async (ctx) => {
-    ctx.status = 404;
+    ctx.status = 200;
     ctx.body = { message: 'Page not found' };
 });
 

@@ -1,4 +1,7 @@
 import { SUM, timestamp } from '../../constants';
+import { InternalErrorCode, LoginNotFoundCode,
+         IncorrectAmountCode, UnableToPerformOperationCode,
+         TransactionNotFoundCode, OrderCompletedCode } from './constants/errors';
 import { UserService, PaymentService } from '../../../users/services';
 
 function c(ctx, obj) {
@@ -78,7 +81,7 @@ async function create_transaction(ctx, transaction) {
         ctx.status = 200;
         ctx.body = {
             id: body.id, result: null,
-            error: { code: -32400, message: "Internal error" }
+            error: InternalErrorCode
         };
     }
 };
@@ -87,12 +90,12 @@ export default {
         const itutor = Number(body.params.account.itutor);
         if (!itutor || typeof itutor != 'number') return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31050, message: "Login not found." }
+            result: null, error: LoginNotFoundCode
         });
 
         if (body.params.amount < SUM) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31001, message: "Incorrect amount." }
+            result: null, error: IncorrectAmountCode
         });
 
         let user = await UserService
@@ -100,7 +103,7 @@ export default {
 
         if(!user) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31050, message: "Login not found." }
+            result: null, error: LoginNotFoundCode
         });
         let payment = await cycle({ id: user.uniqueID });
         if(payment){
@@ -116,24 +119,24 @@ export default {
         const itutor = Number(body.params.account.itutor);
         if (!itutor || typeof itutor != 'number') return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31050, message: "Login not found." }
+            result: null, error: LoginNotFoundCode
         });
 
         let user = await UserService.findOne({ uniqueID: itutor });
         if(!user || !user.pay_state) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31050, message: "Login not found." }
+            result: null, error: LoginNotFoundCode
         });
 
         if (body.params.amount <= SUM) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31001, message: "Incorrect amount." }
+            result: null, error: IncorrectAmountCode
         });
 
         let payment = await cycle({ user, itutor });
         if(!payment) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31050, message: "Login not found." }
+            result: null, error: LoginNotFoundCode
         });
 
         if (!payment.payment_id)
@@ -145,7 +148,7 @@ export default {
         if (payment) {
             if (payment.params.state != 1) return c(ctx, {
                 id: body.id,
-                result: null, error: { code: -31008, message: "Unable to perform operation." }
+                result: null, error: UnableToPerformOperationCode
             });
 
             const bool = timestamp() <= payment.time_out;
@@ -159,7 +162,7 @@ export default {
 
                 return c(ctx, {
                     id: body.id, result: null,
-                    error: { code: -31008, message: "Unable to perform operation." }
+                    error: UnableToPerformOperationCode
                 });
             }
 
@@ -168,7 +171,7 @@ export default {
             let bool = await this.checkPerformTransaction(ctx, body);
             if (!bool) return c(ctx, {
                 id: body.id,
-                result: null, error: { code: -31050, message: "Login not found." }
+                result: null, error: LoginNotFoundCode
             });
             return create_transaction(ctx, ctx.state.payment);
         }
@@ -179,7 +182,7 @@ export default {
 
         if (!payment) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31003, message: "Transaction not found" }
+            result: null, error: TransactionNotFoundCode
         });
 
         let { state } = payment.params;
@@ -187,7 +190,7 @@ export default {
         if (state != 1) {
             if (state != 2) return c(ctx, {
                 id: body.id, result: null,
-                error: { code: -31008, message: "Unable to perform operation." }
+                error: UnableToPerformOperationCode
             });
             
             if(payment.params.perform_time){
@@ -219,7 +222,7 @@ export default {
                 }, payment);
                 return c(ctx, {
                     id: body.id, result: null,
-                    error: { code: -31008, message: "Unable to perform operation." }
+                    error: UnableToPerformOperationCode
                 });
             }
             let user = await UserService.findOne({ uniqueID: payment.id });
@@ -242,7 +245,7 @@ export default {
         let payment = await cycle({ payment_id: body.params.id });
         if (!payment) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31003, message: "Transaction not found" }
+            result: null, error: TransactionNotFoundCode
         });
 
         let { state, cancel_time, transaction } = payment.params;
@@ -276,11 +279,7 @@ export default {
             let bool = payment.amount <= user.amount;
             if (!bool) return c(ctx, {
                 id: body.id, result: null,
-                error: {
-                    code: -31007,
-                    message: `Order completed. Cannot cancel transaction. 
-                    The product or service is provided to the buyer in full.`
-                }
+                error: OrderCompletedCode
             });
 
             let amount = user.amount - payment.amount;
@@ -321,7 +320,7 @@ export default {
 
         if (!payment) return c(ctx, {
             id: body.id,
-            result: null, error: { code: -31003, message: "Transaction not found" }
+            result: null, error: TransactionNotFoundCode
         });
         const {
             create_time, perform_time, cancel_time, transaction, state, reason
