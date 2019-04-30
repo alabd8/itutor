@@ -20,23 +20,26 @@ export default async (data) => {
         const lcs = await UserService.find({ role: 'center' });
         
         return iterate(lcs);
-    }else if(data === 'getTutors'){
+    }
+    if(data === 'getTutors'){
         const tutors = await UserService.find({ role: 'tutor' });
         
         return iterate(tutors); 
-    }else if(data === 'getUsers'){
+    }
+    if(data === 'getUsers'){
         const students = await UserService.find({ role: 'student' });
 
         return iterate(students);
-    }else if(data === 'getModerators'){
+    }if(data === 'getModerators'){
         const moderators = await UserService.find({ role: 'moderator' });
 
         return iterate(moderators);
-    }else if(data === 'getAdmins'){
+    }
+    if(data === 'getAdmins'){
         const moderators = await UserService.find({ role: 'admin' });
 
         return iterate(moderators);
-    }{
+    }else{
         throw new AppError({ status: 400, message: 'Error on validating user' });
     }
 }

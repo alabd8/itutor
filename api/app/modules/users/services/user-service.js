@@ -39,8 +39,8 @@ export default {
 	async count(){
 		return User.count();
 	},
-	async countOne(params){
-		return User.find(params).count().select({ createdAt: 0, password: 0, _id: 0, __v: 0 });
+	async countByEnum(params){
+		return User.find(params).count();
 	},
 	async getRecommended(params){
 		return User.find(params).select({ createdAt: 0, updatedAt: 0, password: 0, _id: 0, __v: 0 });

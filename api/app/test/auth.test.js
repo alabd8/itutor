@@ -9,14 +9,15 @@ import createApp from '../server';
 const app = agent(createApp());
 
 test('User can signup', async t => {
-    const res = await app.post('/menu/auth/signup/student').send({
+    const res = await app.post('/menu/auth/signup').send({
         firstName: 'alisher',
         lastName: 'abdullaev',
         role: 'student',
-        email: 'alishersulimov1@gmail.com',
+        email: 'alisshersulimov1@gmail.com',
         password: 'helloworld',
-        phone: '998909999999'
+        phone: '+998909999999'
     });
+    t.throws(Promise);
     t.is(res.status, 400);
 });
 
