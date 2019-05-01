@@ -4,28 +4,28 @@ import { UserService } from '../../users/services';
 
 export default async (ctx, user, data = null) => {
 	if(data === 'languages'){
-		const titles = await constants.getLanguages();
+		const titles = constants.getLanguages();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'sciences'){
-		const titles = await constants.getSciences();
+		const titles = constants.getSciences();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'information'){
-		const titles = await constants.getInformation();
+		const titles = constants.getInformation();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'prof'){
-		const titles = await constants.getProf();
+		const titles = constants.getProf();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'extra'){
-		const titles = await constants.getExtra();
+		const titles = constants.getExtra();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'сreative'){
-		const titles = await constants.getCreative();
+		const titles = constants.getCreative();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'combined'){
-		const titles = await constants.getCombined();
+		const titles = constants.getCombined();
 		return await setCtx(ctx, { user, titles });
 	}else if(data === 'unpaid'){
-		const titles = await constants.getUnpaid();
+		const titles = constants.getUnpaid();
 		return await setCtx(ctx, { user, titles });
 	}else if(data){
 		const findByCategories = await UserService.find({ category: data });

@@ -5,7 +5,7 @@ import setCtx from '../../../helpers/setCtx';
 export default async (ctx, user, result, body = null) => {
 	const title = body.title;
 	const category = body.category;
-	const data = async (role) => {
+	const data = (role) => {
 		let data;
 		if(role){
 			data = { role, 'page.course.title': title, 'page.course.category': category }
@@ -17,13 +17,13 @@ export default async (ctx, user, result, body = null) => {
 	const recommended = await UserService.getRecommended({ recommended: true });
 	
 	if(body.data === 'center'){
-		const centers = await UserService.getRecommended(await data('center'));
+		const centers = await UserService.getRecommended(data('center'));
 		return await setCtx(ctx, [{ user }, { centers }, { recommended },  { resultByCoords: result } ]);
 	}else if(body.data === 'tutor'){
-		const tutors = await UserService.getRecommended(await data('tutor'));
+		const tutors = await UserService.getRecommended(data('tutor'));
 		return await setCtx(ctx, [{ user }, { tutors }, { recommended }, { resultByCoords: result } ]);
 	}else if(body.data === 'both'){
-		const both = await User.find(await data());
+		const both = await User.find(data());
 		return await setCtx(ctx, [{ user }, { both }, { recommended }, { resultByCoords: result } ]);
 	}else{
 		ctx.throw(404, `Error data`);

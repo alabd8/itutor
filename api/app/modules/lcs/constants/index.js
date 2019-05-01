@@ -1,10 +1,10 @@
 export default {
 	
-	async getTags(){
+	getTags(){
 		return ['математика', 'физика', 'геометрия', 'английский', 'французский', 'арабский', 'узбекский'];
 	},
 
-	async getTitles(){
+	getTitles(){
 		return [	{ title: 'Языковые курсы', request: 'languages' }, 
 					{ title: 'Точные науки', request: 'sciences' }, 
 					{ title: 'Компьютерные курсы', request: 'information' },
@@ -16,18 +16,18 @@ export default {
 				];
 	},
 
-	async getLanguages(){
+	getLanguages(){
 		return ['Английский', 'Узбекский', 'Французский', 
 				'Испанский', 'Арабский', 'Персидский', 
 				'Русский', 'Италианский', 'Китайский',
 				'Японский', 'Корейский', 'Греческий']
 	},
 
-	async getSciences(){
+	getSciences(){
 		return ['Math', 'Physics', 'Geometry', 'Information', 'Chemistry', 'Biology'];
 	},
 
-	async getInformation(){
+	getInformation(){
 		return ['Word', 'Excel', 'PowerPoint',
 				'Интернет', 'C#', 'Javascript',
 				'Программирование 1C', 'Python',
@@ -35,25 +35,25 @@ export default {
 				'Базовые навыки по программированию'];
 	},
 
-	async getProf(){
+	getProf(){
 		return ['','','','','','','',''];
 	},
 
-	async getExtra(){
+	getExtra(){
 		return ['IELTS', 'Подготовка к ЕГЭ',
 				'Подготовка к зарубежным университетам',
 				'Магистратура','Доктарантура','Аспирантура']
 	},
 
-	async getCreative(){
+	getCreative(){
 		return ['','','','','','','',''];
 	},
 
-	async getCombined(){
+	getCombined(){
 		return ['','','','','','','',''];
 	},
 
-	async getUnpaid(){
+	getUnpaid(){
 		return ['','','','','','','',''];	
 	}
 }

@@ -13,14 +13,14 @@ export default async (ctx) => {
 		if(role === 'center' || role === 'tutor'){
 			userData = { 
                 ...pick(body, User.createFields),
-                img: await setParamsForImage(ctx),
+                img: setParamsForImage(ctx),
                 uniqueID: uuidGenerator(),
                 params: { amount: 500000 }
             }
 		}else{
             userData = {
                 ...pick(body, User.createFieldsForStudent),
-                img: await setParamsForImage(ctx)
+                img: setParamsForImage(ctx)
             }
         }
     

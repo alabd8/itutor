@@ -8,7 +8,7 @@ import extract from '../helpers/extract';
 import setParamsForImage from '../../../helpers/setParamsForImage';
 import updatingUser from '../../../helpers/updatingUser';
 
-import { User, Payment } from '../../users';
+import { User } from '../../users';
 import { UserService } from '../../users/services';
 
 
@@ -98,7 +98,7 @@ export default {
 		if(newData.role !== 'student'){
 			throw new AppError({ status: 400, message: `Error on updating "role"` });			
 		}
-		let img = await setParamsForImage(ctx);			  
+		let img = setParamsForImage(ctx);			  
 
 		await updatingUser(img, newData, student, ctx);
 

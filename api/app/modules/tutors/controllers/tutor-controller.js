@@ -92,7 +92,7 @@ export default {
 			throw new AppError({ status: 400, message: `Error on updating "role"` });			
 		}
 		
-		let img = await setParamsForImage(ctx);			  
+		let img = setParamsForImage(ctx);			  
 		
 		await updatingUser(img, newData, tutor, ctx);
 

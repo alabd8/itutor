@@ -1,6 +1,6 @@
 import { HUN, KM } from '../constants';
 
-export default async (body) => {
+export default (body) => {
 	if(body.coords){
 
 		const lat = body.coords.lat * HUN;

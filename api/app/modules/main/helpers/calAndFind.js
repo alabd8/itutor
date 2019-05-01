@@ -3,7 +3,7 @@ import { UserService } from '../../users/services';
 
 export default async (body) => {
     if(body.coords){
-        const coords = await calculate(body);
+        const coords = calculate(body);
 
         const objects = await UserService.find(); 
         let result = [];
