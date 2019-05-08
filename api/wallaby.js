@@ -6,7 +6,9 @@ module.exports = function (wallaby) {
   
       tests: [
         'test/*.test.js'
-      ]
+      ],
+
+      testFramework: 'ava'
     };
   };
   

@@ -1,11 +1,10 @@
 import test from 'ava';
 import agent from 'supertest-koa-agent';
 
-// import Koa from 'koa';
+import Koa from 'koa';
 import jwtService from '../services/jwt-service';
 import createApp from '../server';
 
-// const app = agent(new Koa());
 const app = agent(createApp());
 
 test('User can signup', async t => {
@@ -17,7 +16,6 @@ test('User can signup', async t => {
         password: 'helloworld',
         phone: '+998909999999'
     });
-    t.throws(Promise);
     t.is(res.status, 400);
 });
 
